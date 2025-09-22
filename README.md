@@ -149,16 +149,32 @@ src/
 
 - `npm start` - Start development server
 - `npm run build` - Build for production
-- `npm run lint` - Run linting
-- `npm test` - Run tests
+- `npm run lint` - Run ESLint (TypeScript + React)
+- `npm run format` - Run Prettier formatting
+- `npm test` - Run Jest tests with coverage
 - `npm run test:watch` - Run tests in watch mode
+- `npm run test:prod` - Lint and run tests (CI-friendly)
 
 ### Code Quality
 
-- **Linting**: TSLint with Prettier integration
+- **Linting**: ESLint (flat config via `eslint.config.mjs`) with `@typescript-eslint` and `eslint-plugin-react`
+- **Formatting**: Prettier 3 configured via `.prettierrc`
 - **Type Checking**: Full TypeScript support
 - **Testing**: Jest test framework
-- **Commit Standards**: Conventional commits with commitlint
+- **Commit Standards**: Conventional Commits enforced by Commitlint
+
+
+## Tooling
+
+- **ESLint (Flat Config)**: Modern ESLint v9 setup using `typescript-eslint` and React rules. Run with `npm run lint`.
+- **Prettier 3**: Opinionated formatting applied with `npm run format` and integrated into pre-commit.
+- **Husky + lint-staged**: Pre-commit hook runs ESLint and Prettier on staged files; commit-msg hook runs Commitlint.
+  - Hooks are installed when dependencies are installed. If hooks are missing locally, run:
+    ```bash
+    npm run prepare
+    ```
+- **Commitlint**: Enforces Conventional Commits. Examples: `feat: add product audit`, `fix: correct SEO validation`.
+- **Jest**: Unit testing with coverage. See `npm test` and `npm run test:watch`.
 
 ## API Integration
 
@@ -179,14 +195,6 @@ The plugin uses API credentials configured in the plugin settings to authenticat
 2. **Content Not Loading**: Check your development site URL configuration
 3. **Build Errors**: Ensure all dependencies are installed and up to date
 
-### Support
-
-For technical support or feature requests, contact the development team at steven.hall@goldenhippo.com.
-
-## License
-
-This project is licensed under UNLICENSED - see the package.json for details.
-
 ## Contributing
 
 1. Follow the existing code style and conventions
@@ -196,4 +204,4 @@ This project is licensed under UNLICENSED - see the package.json for details.
 
 ---
 
-Built with ❤️ for Hippo Commerce by the Golden Hippo development team.
+Built for Hippo Commerce by the Golden Hippo development team.
