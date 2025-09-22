@@ -112,6 +112,7 @@ async function setModel(
 ): Promise<string | undefined> {
   const randomId = crypto.randomUUID().toString()
   try {
+    // @ts-expect-error incomplete types
     await currentState.models.update({
       ...shape,
       id: current ? current.id : randomId,
@@ -215,7 +216,8 @@ Builder.register('plugin', {
 })
 
 Builder.register('app.onLoad', async ({ triggerSettingsDialog }: AppActions) => {
-  const pluginSettings = appState.user.organization.value.settings.plugins?.get(pluginId) // @ts-expect-error types are not complete
+  // @ts-expect-error incomplete types
+  const pluginSettings = appState.user.organization.value.settings.plugins?.get(pluginId)
   const hasConnected = pluginSettings?.get('hasConnected')
   const brand = pluginSettings?.get('brand')
   const apiUser = pluginSettings?.get('apiUser')

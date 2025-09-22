@@ -1,1 +1,1 @@
-export const pluginId = '@goldenhippo/hippo-builder-plugin'
+export const pluginId = '@goldenhippo/hippo-commerce-builder-plugin'

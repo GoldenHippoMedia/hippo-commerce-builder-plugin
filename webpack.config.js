@@ -69,4 +69,9 @@ module.exports = {
       'Access-Control-Allow-Origin': '*',
     },
   },
+  performance: {
+    maxAssetSize: 1000000, // 1 MB
+    maxEntrypointSize: 1000000, // 1 MB
+    hints: 'warning',
+  }
 };
