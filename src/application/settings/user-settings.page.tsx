@@ -30,7 +30,8 @@ const UserSettingsPage: React.FC<UserSettingsPageProps> = ({ state }) => {
   };
 
   return useObserver(() => (
-    <div className="container mx-auto p-6 max-w-6xl">
+    <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
+      <div className="p-6">
       <div className="mb-8">
         <h1 className="text-3xl font-bold flex items-center gap-3">
           <HiOutlineUser className="h-8 w-8" />
@@ -246,6 +247,7 @@ const UserSettingsPage: React.FC<UserSettingsPageProps> = ({ state }) => {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   ));

@@ -80,16 +80,18 @@ function BlogCommentPage(props: Props) {
   };
 
   return useObserver(() => (
-    <div>
-      <BlogCommentList
-        comments={state.blogComments}
-        onApprove={handleApprove}
-        onReject={handleReject}
-        onReply={handleReply}
-        onViewBlog={handleViewBlog}
-        loading={state.loadingBlogComments}
-        pageSize={10}
-      />
+    <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
+      <div className="p-6">
+        <BlogCommentList
+          comments={state.blogComments}
+          onApprove={handleApprove}
+          onReject={handleReject}
+          onReply={handleReply}
+          onViewBlog={handleViewBlog}
+          loading={state.loadingBlogComments}
+          pageSize={10}
+        />
+      </div>
       <CommentReplyModal
         isOpen={isReplyModalOpen}
         onClose={handleCloseReplyModal}

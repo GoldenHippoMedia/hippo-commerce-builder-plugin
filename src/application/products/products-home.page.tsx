@@ -37,13 +37,13 @@ function ProductsHomePage(props: Props) {
 
 
   return useObserver(() => (
-    <div className={'max-w-7xl mx-auto'}>
-      <div className="p-6 bg-base-200 min-h-screen">
+    <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
+      <div className="p-6">
         <ProductsDashboardComponent
           products={state.builderProducts}
           hippoProducts={state.products}
           loading={state.loadingBuilderProducts || state.loadingProducts}
-          className="max-w-7xl mx-auto"
+          className="w-full"
         />
       </div>
     </div>

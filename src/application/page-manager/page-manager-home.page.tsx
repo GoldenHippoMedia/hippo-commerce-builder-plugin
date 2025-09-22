@@ -5,6 +5,7 @@ import StatGridCard from "@components/stat-grid/stat-grid-card.component";
 import { useObserver } from "mobx-react";
 import PageList from "@components/page-list.component";
 import { AiOutlineReload } from "react-icons/ai";
+import { HiOutlineDocumentText } from "react-icons/hi2";
 
 interface Props {
   state: AppTabState;
@@ -26,40 +27,67 @@ function PageManagerHomePage(props: Props) {
   };
 
   return useObserver(() => (
-    <div className={"w-full max-w-7xl mx-auto items-center"}>
-      <StatGridContainer>
-        <StatGridCard
-          variant={"info"}
-          title={"General"}
-          subtitle={"general pages published"}
-          metric={general().length}
-          loading={state.loadingPages}
-        ></StatGridCard>
-        <StatGridCard
-          variant={"info"}
-          title={"PDP"}
-          subtitle={"product detail pages published"}
-          metric={products().length}
-          loading={state.loadingPages}
-        ></StatGridCard>
-        <StatGridCard
-          variant={"info"}
-          title={"Blog"}
-          subtitle={"blog pages published"}
-          metric={blogs().length}
-          loading={state.loadingPages}
-        ></StatGridCard>
-      </StatGridContainer>
-      <div className={"w-fit ml-auto mr-4"}>
-        <button
-          className={"btn btn-secondary btn-sm mb-8"}
-          onClick={state.loadPages}
-        >
-          <AiOutlineReload />
-          Refresh
-        </button>
+    <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="bg-base-200 p-6 border-b border-base-300 rounded-lg">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <HiOutlineDocumentText className="h-8 w-8" />
+              {state.brandDetails?.name} Pages
+            </h1>
+            <div className="text-sm text-base-content/60">
+              {state.pages.length} total pages
+            </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="mb-6">
+            <StatGridContainer>
+              <StatGridCard
+                variant={"info"}
+                title={"General"}
+                subtitle={"general pages published"}
+                metric={general().length}
+                loading={state.loadingPages}
+              />
+              <StatGridCard
+                variant={"info"}
+                title={"PDP"}
+                subtitle={"product detail pages published"}
+                metric={products().length}
+                loading={state.loadingPages}
+              />
+              <StatGridCard
+                variant={"info"}
+                title={"Blog"}
+                subtitle={"blog pages published"}
+                metric={blogs().length}
+                loading={state.loadingPages}
+              />
+            </StatGridContainer>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-base-content/70">
+                Manage and audit your website pages
+              </div>
+            </div>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={state.loadPages}
+            >
+              <AiOutlineReload />
+              Refresh
+            </button>
+          </div>
+        </div>
       </div>
-      <div className={"w-full"}>
+
+      {/* Page List */}
+      <div className="max-w-7xl mx-auto p-6">
         <PageList pages={state.pages} isLoading={state.loadingPages} products={state.products} />
       </div>
     </div>

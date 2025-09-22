@@ -275,30 +275,23 @@ function PageList(props: PageListProps) {
         </div>
       </div>
 
-      <ul
-        className={
-          "max-h-[65svh] overflow-y-auto no-scrollbar min-w-full pr-4 pt-4"
-        }
-      >
-        {filteredAndSortedPages.length === 0 ? (
-          <li className={"text-center p-4"}>
-            <div className="font-semibold text-accent text-lg">
-              No pages found
-            </div>
-            <p className={"mt-2"}>Try adjusting your search or filters</p>
-          </li>
-        ) : (
-          filteredAndSortedPages.map((page) => (
-            <li
+      {filteredAndSortedPages.length === 0 ? (
+        <div className={"text-center p-4"}>
+          <div className="font-semibold text-accent text-lg">No pages found</div>
+          <p className={"mt-2"}>Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4 pr-4">
+          {filteredAndSortedPages.map((page) => (
+            <PageCard
               key={page.id}
-              className={"w-full"}
-              onClick={() => handlePageSelect(page)}
-            >
-              <PageCard page={page}/>
-            </li>
-          ))
-        )}
-      </ul>
+              page={page}
+              onSelectPage={handlePageSelect}
+              onSelectPageLabel="View Details"
+            />
+          ))}
+        </div>
+      )}
 
       {selectedPage && (
         <PageDetailsDialog

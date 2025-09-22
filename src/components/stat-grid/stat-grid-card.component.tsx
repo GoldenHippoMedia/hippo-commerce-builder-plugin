@@ -3,7 +3,6 @@ import clsx from "clsx";
 
 type StatCardVariant = "success" | "warning" | "error" | "neutral" | "info";
 
-// Props interface extending the WithStyles
 export interface StatGridCardProps {
   title: string;
   metric: string | number;
