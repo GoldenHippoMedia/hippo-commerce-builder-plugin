@@ -1,0 +1,88 @@
+{
+  "name": "@goldenhippo/hippo-builder-plugin",
+  "version": "1.0.0",
+  "description": "Custom Builder.io application for management of Golden Hippo commerce brands",
+  "author": "steven.hall@goldenhippo.com",
+  "license": "UNLICENSED",
+  "entry": "plugin",
+  "output": "plugin.system.js",
+  "main": "dist/plugin.system.js",
+  "unpkg": "dist/plugin.system.js",
+  "typings": "dist/types/plugin.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
+    "prebuild": "rimraf dist",
+    "build": "webpack --mode production",
+    "start": "webpack-dev-server --mode development",
+    "release:dev": "npm run build && npm version prerelease --no-git-tag-version && npm publish --tag dev",
+    "test": "jest --coverage",
+    "test:watch": "jest --coverage --watch",
+    "test:prod": "npm run lint && npm run test -- --no-cache",
+    "deploy-docs": "ts-node tools/gh-pages-publish",
+    "report-coverage": "cat ./coverage/lcov.info | coveralls",
+    "commit": "git-cz",
+    "semantic-release": "semantic-release",
+    "semantic-release-prepare": "ts-node tools/semantic-release-prepare"
+  },
+  "lint-staged": {
+    "{src,test}/**/*.ts": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "_moduleAliases": {
+    "@application": "src/application",
+    "@components": "src/components",
+    "@core": "src/core",
+    "@services": "src/services",
+    "@utils": "src/utils"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "devDependencies": {
+    "@babel/preset-react": "^7.27.1",
+    "@builder.io/react": "^8.2.7",
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@emotion/core": "^10.3.1",
+    "@emotion/styled": "^10.3.0",
+    "@material-ui/core": "^3.9.4",
+    "@material-ui/icons": "^3.0.2",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/node": "^22.18.3",
+    "@types/react": "^18.3.24",
+    "css-loader": "^7.1.2",
+    "daisyui": "^5.1.12",
+    "mobx": "^6.13.7",
+    "mobx-react": "^9.2.0",
+    "postcss-loader": "^8.2.0",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "semantic-release": "^24.2.8",
+    "style-loader": "^4.0.0",
+    "ts-loader": "^9.5.4",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "tslint-config-standard": "^9.0.0",
+    "typescript": "^5.8.3",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "dependencies": {
+    "@builder.io/app-context": "^1.0.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "clsx": "^2.1.1",
+    "postcss": "^8.5.6",
+    "react-cookie": "^8.0.1",
+    "react-icons": "^5.5.0",
+    "source-map-loader": "^5.0.0",
+    "tailwindcss": "^4.1.13"
+  }
+}
