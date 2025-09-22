@@ -1,19 +1,11 @@
-import React from "react";
+import React from 'react'
 
 interface StatGridContainerProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 function StatGridContainer(props: StatGridContainerProps): JSX.Element {
-  return (
-    <div
-      className={
-        "max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4"
-      }
-    >
-      {props.children}
-    </div>
-  );
+  return <div className={'max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4'}>{props.children}</div>
 }
 
-export default StatGridContainer;
+export default StatGridContainer

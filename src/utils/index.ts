@@ -1,4 +1,4 @@
-import { BuilderContent } from "@builder.io/sdk";
+import { BuilderContent } from '@builder.io/sdk'
 import {
   BlogComment,
   BlogIssue,
@@ -14,43 +14,43 @@ import {
   ProductGroupChild,
   ValidationIssue,
   ValidationWarning,
-} from "./utils.interfaces";
-import { PageTypes, PdpTypes } from "@core/models/page.model";
-import { IProduct } from "@services/commerce-api/types";
+} from './utils.interfaces'
+import { PageTypes, PdpTypes } from '@core/models/page.model'
+import { IProduct } from '@services/commerce-api/types'
 
 class Utils {
   static parsePages(pages: BuilderContent[]): PageDetails[] {
-    const output: PageDetails[] = [];
+    const output: PageDetails[] = []
 
     for (const page of pages) {
-      const { data, id, published, lastUpdated } = page;
+      const { data, id, published, lastUpdated } = page
 
-      if (id && data && published === "published") {
-        const pageType = (data["pageType"] as PageTypes) ?? "General";
+      if (id && data && published === 'published') {
+        const pageType = (data['pageType'] as PageTypes) ?? 'General'
 
         // Create base properties that are common to all page types
         const baseProperties = {
           id: id,
-          title: data["title"] ?? "",
-          description: data["description"] ?? "",
-          path: data["url"] ?? "/",
+          title: data['title'] ?? '',
+          description: data['description'] ?? '',
+          path: data['url'] ?? '/',
           pageType: pageType,
-          thumbnail: data["seoImage"],
-          seoTitle: data["heading"],
-          validationStatus: "valid" as const,
+          thumbnail: data['seoImage'],
+          seoTitle: data['heading'],
+          validationStatus: 'valid' as const,
           issues: [],
           warnings: [],
-          lastUpdated: new Date(lastUpdated ?? ""),
+          lastUpdated: new Date(lastUpdated ?? ''),
           // @ts-expect-error incomplete types provided by BuilderContent
-          previewUrl: (page["previewUrl"] as string) ?? "",
-        };
+          previewUrl: (page['previewUrl'] as string) ?? '',
+        }
 
         // Create the appropriate page type based on pageType
-        let formattedPage: PageDetails;
+        let formattedPage: PageDetails
 
         switch (pageType) {
           case PageTypes.BLOG: {
-            const blog = data?.["blog"] as Record<string, any> | undefined;
+            const blog = data?.['blog'] as Record<string, any> | undefined
             formattedPage = {
               ...baseProperties,
               pageType: PageTypes.BLOG,
@@ -58,22 +58,18 @@ class Utils {
                 author: blog?.author,
                 title: blog?.title,
                 snippet: blog?.snippet,
-                publicationDate: blog?.publicationDate
-                  ? new Date(blog.publicationDate)
-                  : undefined,
+                publicationDate: blog?.publicationDate ? new Date(blog.publicationDate) : undefined,
                 thumbnail: blog?.thumbnail,
-                categories: (
-                  (blog?.categories as { category: BuilderReference }[]) ?? []
-                ).map((c) => {
+                categories: ((blog?.categories as { category: BuilderReference }[]) ?? []).map((c) => {
                   return {
-                    id: c.category.value?.id ?? "",
-                    name: c.category.value?.data?.name ?? "",
-                  };
+                    id: c.category.value?.id ?? '',
+                    name: c.category.value?.data?.name ?? '',
+                  }
                 }),
               },
               pdp: null,
-            };
-            break;
+            }
+            break
           }
 
           case PageTypes.PRODUCT: {
@@ -82,8 +78,8 @@ class Utils {
               pageType: PageTypes.PRODUCT,
               pdp: this.getPdpInfo(page),
               blog: undefined as never,
-            } as PdpDetails;
-            break;
+            } as PdpDetails
+            break
           }
 
           case PageTypes.GENERAL:
@@ -93,242 +89,220 @@ class Utils {
               pageType: PageTypes.GENERAL,
               blog: undefined as never,
               pdp: undefined as never,
-            } as GeneralDetails;
-            break;
+            } as GeneralDetails
+            break
           }
         }
 
         // Validation logic
-        const generalValidations = Validator.generalValidation(formattedPage);
+        const generalValidations = Validator.generalValidation(formattedPage)
         let pageSpecificValidation: ValidationResponse = {
           warnings: [],
           issues: [],
-        };
+        }
 
         if (formattedPage.pageType === PageTypes.BLOG) {
-          pageSpecificValidation = Validator.blogValidation(formattedPage);
+          pageSpecificValidation = Validator.blogValidation(formattedPage)
         }
 
         if (formattedPage.pageType === PageTypes.PRODUCT) {
-          pageSpecificValidation = Validator.pdpValidation(formattedPage);
+          pageSpecificValidation = Validator.pdpValidation(formattedPage)
         }
 
-        const mergedWarnings = [
-          ...generalValidations.warnings,
-          ...pageSpecificValidation.warnings,
-        ];
-        const mergedIssues = [
-          ...generalValidations.issues,
-          ...pageSpecificValidation.issues,
-        ];
+        const mergedWarnings = [...generalValidations.warnings, ...pageSpecificValidation.warnings]
+        const mergedIssues = [...generalValidations.issues, ...pageSpecificValidation.issues]
 
         const finalPage: PageDetails = {
           ...formattedPage,
-          validationStatus:
-            mergedIssues.length > 0
-              ? "invalid"
-              : mergedWarnings.length > 0
-                ? "warning"
-                : "valid",
+          validationStatus: mergedIssues.length > 0 ? 'invalid' : mergedWarnings.length > 0 ? 'warning' : 'valid',
           warnings: mergedWarnings,
           issues: mergedIssues,
-        };
+        }
 
-        output.push(finalPage);
+        output.push(finalPage)
       }
     }
-    return output;
+    return output
   }
 
-  static errorDetails(
-    error: ValidationIssue | ValidationWarning,
-  ): ErrorDetails {
+  static errorDetails(error: ValidationIssue | ValidationWarning): ErrorDetails {
     switch (error) {
       case PageWarning.NO_SEO_TITLE:
         return {
           message: error,
-          errorType: "SEO",
-          severity: "warning",
-        };
+          errorType: 'SEO',
+          severity: 'warning',
+        }
       case PageIssue.NO_SEO_IMAGE:
         return {
           message: error,
-          errorType: "SEO",
-          severity: "issue",
-        };
+          errorType: 'SEO',
+          severity: 'issue',
+        }
       case PageIssue.NO_SEO_DESCRIPTION:
         return {
           message: error,
-          errorType: "SEO",
-          severity: "issue",
-        };
+          errorType: 'SEO',
+          severity: 'issue',
+        }
       case PageIssue.NO_TITLE:
         return {
           message: error,
-          errorType: "General",
-          severity: "issue",
-        };
+          errorType: 'General',
+          severity: 'issue',
+        }
 
       case BlogIssue.NOT_CONFIGURED:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
       case BlogIssue.NO_AUTHOR:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
       case BlogIssue.NO_TITLE:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
       case BlogIssue.NO_SNIPPET:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
       case BlogIssue.NO_PUBLICATION_DATE:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
       case BlogIssue.NO_THUMBNAIL:
         return {
           message: error,
-          errorType: "Blog",
-          severity: "issue",
-        };
+          errorType: 'Blog',
+          severity: 'issue',
+        }
 
       case PdpIssue.NOT_CONFIGURED:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_CATEGORY:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_TYPE:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_PRODUCT:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_PRODUCT_GROUP:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_IMAGES:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_DETAILS:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.NO_FLAVORS_OR_SIZES:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       case PdpIssue.ONLY_TRIAL:
         return {
           message: error,
-          errorType: "Product",
-          severity: "issue",
-        };
+          errorType: 'Product',
+          severity: 'issue',
+        }
       default:
         return {
           message: error,
-          errorType: "General",
-          severity: "warning",
-        };
+          errorType: 'General',
+          severity: 'warning',
+        }
     }
   }
 
-  static parseBlogComments(
-    comments: (BuilderContent & Record<string, any>)[],
-  ): BlogComment[] {
-    const formattedComments: BlogComment[] = [];
-    console.info("BLOG COMMENTS", comments);
+  static parseBlogComments(comments: (BuilderContent & Record<string, any>)[]): BlogComment[] {
+    const formattedComments: BlogComment[] = []
+    console.info('BLOG COMMENTS', comments)
     comments.forEach((content) => {
-      const comment = content.data;
-      const blogPageInfo = comment?.blog?.value?.data;
+      const comment = content.data
+      const blogPageInfo = comment?.blog?.value?.data
       const blogComment: BlogComment = {
-        id: content.id ?? "",
-        blogId: comment?.blog?.id ?? "",
-        blogTitle: blogPageInfo?.blog?.title ?? blogPageInfo?.title ?? "",
-        name: comment?.name ?? "",
-        comment: (comment?.comment as string) ?? "",
-        date: new Date(comment?.date ?? ""),
-        locale: (comment?.locale as string) ?? "US",
-        language: (comment?.language as string) ?? "en",
+        id: content.id ?? '',
+        blogId: comment?.blog?.id ?? '',
+        blogTitle: blogPageInfo?.blog?.title ?? blogPageInfo?.title ?? '',
+        name: comment?.name ?? '',
+        comment: (comment?.comment as string) ?? '',
+        date: new Date(comment?.date ?? ''),
+        locale: (comment?.locale as string) ?? 'US',
+        language: (comment?.language as string) ?? 'en',
         parentId: (comment?.parentId as string) ?? null,
         internal: (comment?.internal as boolean) ?? false,
         blog: {
           author: (blogPageInfo?.blog?.author as string) ?? undefined,
           title: (blogPageInfo?.blog?.title as string) ?? undefined,
           snippet: (blogPageInfo?.blog?.snippet as string) ?? undefined,
-          publicationDate: new Date(
-            blogPageInfo?.blog?.publicationDate ?? undefined,
-          ),
+          publicationDate: new Date(blogPageInfo?.blog?.publicationDate ?? undefined),
           thumbnail: (blogPageInfo?.blog?.thumbnail as string) ?? undefined,
         },
-        status: (comment?.status as "Pending Approval") ?? "Pending Approval",
-      };
-      formattedComments.push(blogComment);
-    });
+        status: (comment?.status as 'Pending Approval') ?? 'Pending Approval',
+      }
+      formattedComments.push(blogComment)
+    })
     return formattedComments.sort((a, b) => {
-      return b.date.getTime() - a.date.getTime();
-    });
+      return b.date.getTime() - a.date.getTime()
+    })
   }
 
-  static getProductFromCatalog(
-    slug: string,
-    catalog: IProduct[],
-  ): IProduct | undefined {
-    return catalog.find((p) => p.slug === slug);
+  static getProductFromCatalog(slug: string, catalog: IProduct[]): IProduct | undefined {
+    return catalog.find((p) => p.slug === slug)
   }
 
   private static getPdpInfo(content: BuilderContent): PdpInfo | null {
-    const rawPdp = content.data?.["pdp"] as Record<string, any> | undefined;
+    const rawPdp = content.data?.['pdp'] as Record<string, any> | undefined
     if (!rawPdp) {
-      return null;
+      return null
     }
-    const slides = ((rawPdp?.slides as { image: string }[]) ?? []).map(
-      (slide) => slide.image,
-    );
-    const typeOfPdp = (rawPdp?.type as PdpTypes.PRODUCT) ?? PdpTypes.PRODUCT;
-    const pageCategory = rawPdp?.category ?? null;
-    const pdpProduct = rawPdp?.product?.value?.data ?? null;
-    const pdpGroup = rawPdp?.productGroup?.value?.data ?? null;
+    const slides = ((rawPdp?.slides as { image: string }[]) ?? []).map((slide) => slide.image)
+    const typeOfPdp = (rawPdp?.type as PdpTypes.PRODUCT) ?? PdpTypes.PRODUCT
+    const pageCategory = rawPdp?.category ?? null
+    const pdpProduct = rawPdp?.product?.value?.data ?? null
+    const pdpGroup = rawPdp?.productGroup?.value?.data ?? null
     if (typeOfPdp === PdpTypes.PRODUCT) {
       return {
         type: typeOfPdp,
-        name: pdpProduct?.displayName ?? pdpProduct?.name ?? "NO NAME???",
+        name: pdpProduct?.displayName ?? pdpProduct?.name ?? 'NO NAME???',
         subHeading: pdpProduct?.subHeading ?? null,
         description: pdpProduct?.shortDescription ?? null,
         slides: slides,
@@ -344,20 +318,14 @@ class Utils {
                 count: pdpProduct?.reviews?.count ?? 0,
                 average: pdpProduct?.reviews?.averageRating ?? 0,
               },
-              categories: this.formatProductCategories([
-                ...(pdpProduct?.categories ?? []),
-              ]),
-              useCases: this.formatProductUseCases([
-                ...(pdpProduct?.useCases ?? []),
-              ]),
+              categories: this.formatProductCategories([...(pdpProduct?.categories ?? [])]),
+              useCases: this.formatProductUseCases([...(pdpProduct?.useCases ?? [])]),
               tags: this.formatProductTags([...(pdpProduct?.tags ?? [])]),
-              ingredients: this.formatProductIngredients([
-                ...(pdpProduct?.ingredients ?? []),
-              ]),
-              slug: pdpProduct?.gh?.slug ?? "",
+              ingredients: this.formatProductIngredients([...(pdpProduct?.ingredients ?? [])]),
+              slug: pdpProduct?.gh?.slug ?? '',
               packagingLabels: {
-                plural: pdpProduct?.packagingLabels?.plural ?? "Units",
-                singular: pdpProduct?.packagingLabels?.singular ?? "Unit",
+                plural: pdpProduct?.packagingLabels?.plural ?? 'Units',
+                singular: pdpProduct?.packagingLabels?.singular ?? 'Unit',
               },
             }
           : null,
@@ -367,28 +335,22 @@ class Utils {
               name: pageCategory?.value?.data?.name,
             }
           : undefined,
-      };
+      }
     }
     if (typeOfPdp === PdpTypes.PRODUCT_GROUP) {
-      const categoryMap: Map<string, NameAndId> = new Map<string, NameAndId>();
-      const tagMap: Map<string, NameAndId> = new Map<string, NameAndId>();
-      const useCaseMap: Map<string, NameAndId> = new Map<string, NameAndId>();
-      const ingredientMap: Map<string, NameAndId> = new Map<
-        string,
-        NameAndId
-      >();
+      const categoryMap: Map<string, NameAndId> = new Map<string, NameAndId>()
+      const tagMap: Map<string, NameAndId> = new Map<string, NameAndId>()
+      const useCaseMap: Map<string, NameAndId> = new Map<string, NameAndId>()
+      const ingredientMap: Map<string, NameAndId> = new Map<string, NameAndId>()
       const products: ProductGroupChild[] = (
         (pdpGroup?.products as {
-          displayName?: string;
-          product: BuilderReference;
-          isTrialSize?: boolean;
+          displayName?: string
+          product: BuilderReference
+          isTrialSize?: boolean
         }[]) ?? []
       ).map((p) => ({
         productId: p.product.value?.data?.gh?.id,
-        name: (p.displayName ??
-          p?.product.value?.data?.displayName ??
-          p?.product.value?.name ??
-          "") as string,
+        name: (p.displayName ?? p?.product.value?.data?.displayName ?? p?.product.value?.name ?? '') as string,
         trialSize: p.isTrialSize ?? false,
         reviews: {
           count: p.product.value?.data?.reviews?.count ?? 0,
@@ -396,43 +358,37 @@ class Utils {
         },
         hidden: p.product.value?.data?.hidden ?? false,
         inStock: !(p.product.value?.data?.outOfStock ?? false),
-        categories: this.formatProductCategories([
-          ...(p.product.value?.data?.categories ?? []),
-        ]),
-        useCases: this.formatProductUseCases([
-          ...(p.product.value?.data?.useCases ?? []),
-        ]),
+        categories: this.formatProductCategories([...(p.product.value?.data?.categories ?? [])]),
+        useCases: this.formatProductUseCases([...(p.product.value?.data?.useCases ?? [])]),
         tags: this.formatProductTags([...(p.product.value?.data?.tags ?? [])]),
-        ingredients: this.formatProductIngredients([
-          ...(p.product.value?.data?.ingredients ?? []),
-        ]),
-        slug: p.product.value?.data?.gh.slug ?? "",
-      }));
-      let reviewCount = 0;
-      let reviewScore = 0;
+        ingredients: this.formatProductIngredients([...(p.product.value?.data?.ingredients ?? [])]),
+        slug: p.product.value?.data?.gh.slug ?? '',
+      }))
+      let reviewCount = 0
+      let reviewScore = 0
       for (const p of products) {
-        reviewCount += p.reviews.count ?? 0;
-        reviewScore += (p.reviews.count ?? 0) * (p.reviews.average ?? 0);
+        reviewCount += p.reviews.count ?? 0
+        reviewScore += (p.reviews.count ?? 0) * (p.reviews.average ?? 0)
         p.categories.forEach((category) => {
           if (!categoryMap.has(category.id)) {
-            categoryMap.set(category.id, category);
+            categoryMap.set(category.id, category)
           }
-        });
+        })
         p.useCases.forEach((useCase) => {
           if (!useCaseMap.has(useCase.id)) {
-            useCaseMap.set(useCase.id, useCase);
+            useCaseMap.set(useCase.id, useCase)
           }
-        });
+        })
         p.tags.forEach((tag) => {
           if (!tagMap.has(tag.id)) {
-            tagMap.set(tag.id, tag);
+            tagMap.set(tag.id, tag)
           }
-        });
+        })
         p.ingredients.forEach((ingredient) => {
           if (!ingredientMap.has(ingredient.id)) {
-            ingredientMap.set(ingredient.id, ingredient);
+            ingredientMap.set(ingredient.id, ingredient)
           }
-        });
+        })
       }
       return {
         type: typeOfPdp,
@@ -456,10 +412,10 @@ class Utils {
               useCases: Array.from(useCaseMap.values()),
               tags: Array.from(tagMap.values()),
               ingredients: Array.from(ingredientMap.values()),
-              slug: pdpProduct?.gh?.slug ?? "",
+              slug: pdpProduct?.gh?.slug ?? '',
               packagingLabels: {
-                plural: pdpProduct?.packagingLabels?.plural ?? "Units",
-                singular: pdpProduct?.packagingLabels?.singular ?? "Unit",
+                plural: pdpProduct?.packagingLabels?.plural ?? 'Units',
+                singular: pdpProduct?.packagingLabels?.singular ?? 'Unit',
               },
             }
           : null,
@@ -469,148 +425,139 @@ class Utils {
               id: pageCategory.id,
               name: pageCategory?.value?.data?.name,
             },
-      };
+      }
     }
-    return null;
+    return null
   }
 
-  private static formatProductCategories(
-    categories: { category: BuilderReference }[],
-  ) {
+  private static formatProductCategories(categories: { category: BuilderReference }[]) {
     return categories.map((category) => ({
       id: category.category.id,
-      name: category?.category.value?.data?.name ?? "",
-    }));
+      name: category?.category.value?.data?.name ?? '',
+    }))
   }
 
-  private static formatProductUseCases(
-    useCases: { useCase: BuilderReference }[],
-  ) {
+  private static formatProductUseCases(useCases: { useCase: BuilderReference }[]) {
     return useCases.map((useCase) => ({
       id: useCase.useCase.id,
-      name: useCase?.useCase.value?.data?.name ?? "",
-    }));
+      name: useCase?.useCase.value?.data?.name ?? '',
+    }))
   }
 
   private static formatProductTags(tags: { tag: BuilderReference }[]) {
     return tags.map((tag) => ({
       id: tag.tag.id,
-      name: tag?.tag.value?.data?.name ?? "",
-    }));
+      name: tag?.tag.value?.data?.name ?? '',
+    }))
   }
 
-  private static formatProductIngredients(
-    ingredients: { ingredient: BuilderReference }[],
-  ) {
+  private static formatProductIngredients(ingredients: { ingredient: BuilderReference }[]) {
     return ingredients.map((ingredient) => ({
       id: ingredient.ingredient.id,
-      name: ingredient?.ingredient.value?.data?.name ?? "",
-    }));
+      name: ingredient?.ingredient.value?.data?.name ?? '',
+    }))
   }
 }
 
-export default Utils;
+export default Utils
 
 export interface ErrorDetails {
-  message: string;
-  errorType: "General" | "Blog" | "Product" | "SEO";
-  severity: "issue" | "warning";
+  message: string
+  errorType: 'General' | 'Blog' | 'Product' | 'SEO'
+  severity: 'issue' | 'warning'
 }
 
 interface ValidationResponse {
-  warnings: (ValidationIssue | ValidationWarning)[];
-  issues: string[];
+  warnings: (ValidationIssue | ValidationWarning)[]
+  issues: string[]
 }
 
 class Validator {
   static generalValidation(page: PageDetails): ValidationResponse {
-    const issues: PageIssue[] = [];
-    const warnings: PageWarning[] = [];
-    if (!page.title || page.title === "") {
-      issues.push(PageIssue.NO_TITLE);
+    const issues: PageIssue[] = []
+    const warnings: PageWarning[] = []
+    if (!page.title || page.title === '') {
+      issues.push(PageIssue.NO_TITLE)
     }
-    if (!page.description || page.description === "") {
-      issues.push(PageIssue.NO_SEO_DESCRIPTION);
+    if (!page.description || page.description === '') {
+      issues.push(PageIssue.NO_SEO_DESCRIPTION)
     }
-    if (!page.thumbnail || page.thumbnail === "") {
-      issues.push(PageIssue.NO_SEO_IMAGE);
+    if (!page.thumbnail || page.thumbnail === '') {
+      issues.push(PageIssue.NO_SEO_IMAGE)
     }
-    if (!page.seoTitle || page.seoTitle === "") {
-      warnings.push(PageWarning.NO_SEO_TITLE);
+    if (!page.seoTitle || page.seoTitle === '') {
+      warnings.push(PageWarning.NO_SEO_TITLE)
     }
     return {
       warnings: warnings,
       issues: issues,
-    };
+    }
   }
 
   static blogValidation(page: PageDetails): ValidationResponse {
-    const issues: BlogIssue[] = [];
+    const issues: BlogIssue[] = []
     if (!page.blog) {
       return {
         issues: [BlogIssue.NOT_CONFIGURED],
         warnings: [],
-      };
+      }
     }
     if (!page.blog.author) {
-      issues.push(BlogIssue.NO_AUTHOR);
+      issues.push(BlogIssue.NO_AUTHOR)
     }
     if (!page.blog.title) {
-      issues.push(BlogIssue.NO_TITLE);
+      issues.push(BlogIssue.NO_TITLE)
     }
     if (!page.blog.snippet) {
-      issues.push(BlogIssue.NO_SNIPPET);
+      issues.push(BlogIssue.NO_SNIPPET)
     }
     if (!page.blog.publicationDate) {
-      issues.push(BlogIssue.NO_PUBLICATION_DATE);
+      issues.push(BlogIssue.NO_PUBLICATION_DATE)
     }
     if (!page.blog.thumbnail) {
-      issues.push(BlogIssue.NO_THUMBNAIL);
+      issues.push(BlogIssue.NO_THUMBNAIL)
     }
     return {
       warnings: [],
       issues: issues.length === 5 ? [BlogIssue.NOT_CONFIGURED] : issues,
-    };
+    }
   }
 
   static pdpValidation(page: PageDetails): ValidationResponse {
-    const { pdp } = page;
-    const issues: PdpIssue[] = [];
+    const { pdp } = page
+    const issues: PdpIssue[] = []
     if (!pdp) {
       return {
         issues: [PdpIssue.NOT_CONFIGURED],
         warnings: [],
-      };
+      }
     }
     if (!pdp.type) {
-      issues.push(PdpIssue.NO_TYPE);
+      issues.push(PdpIssue.NO_TYPE)
     }
     if (!pdp.category) {
-      issues.push(PdpIssue.NO_CATEGORY);
+      issues.push(PdpIssue.NO_CATEGORY)
     }
     if (!pdp.productDetails) {
-      issues.push(PdpIssue.NO_PRODUCT);
+      issues.push(PdpIssue.NO_PRODUCT)
     }
     if (!pdp.slides || pdp.slides.length === 0) {
-      issues.push(PdpIssue.NO_IMAGES);
+      issues.push(PdpIssue.NO_IMAGES)
     }
     if (!pdp.productDetails) {
-      issues.push(PdpIssue.NO_DETAILS);
+      issues.push(PdpIssue.NO_DETAILS)
     }
     if (pdp.type === PdpTypes.PRODUCT_GROUP) {
       if ((pdp.productDetails?.flavorsOrSizes.length ?? 0) < 1) {
-        issues.push(PdpIssue.NO_FLAVORS_OR_SIZES);
+        issues.push(PdpIssue.NO_FLAVORS_OR_SIZES)
       }
-      if (
-        pdp.productDetails?.flavorsOrSizes.length === 1 &&
-        pdp.productDetails.includesTrial
-      ) {
-        issues.push(PdpIssue.ONLY_TRIAL);
+      if (pdp.productDetails?.flavorsOrSizes.length === 1 && pdp.productDetails.includesTrial) {
+        issues.push(PdpIssue.ONLY_TRIAL)
       }
     }
     return {
       warnings: [],
       issues: issues,
-    };
+    }
   }
 }

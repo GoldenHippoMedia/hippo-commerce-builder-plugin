@@ -1,38 +1,35 @@
 // page-details-dialog.component.tsx
-import React, { useRef, useEffect, useState } from "react";
-import { HiX } from 'react-icons/hi';
-import { PageDetails } from "@utils/utils.interfaces";
-import PageDetailCard from "@components/page-details.component";
-import { IProduct } from "@services/commerce-api/types";
+import React, { useRef, useEffect, useState } from 'react'
+import { HiX } from 'react-icons/hi'
+import { PageDetails } from '@utils/utils.interfaces'
+import PageDetailCard from '@components/page-details.component'
+import { IProduct } from '@services/commerce-api/types'
 
 interface Props {
-  page: PageDetails;
-  onClose: () => void;
-  products: IProduct[];
+  page: PageDetails
+  onClose: () => void
+  products: IProduct[]
 }
 
 function PageDetailsDialog({ page, onClose, products }: Props) {
-  const modalRef = useRef<HTMLDialogElement>(null);
+  const modalRef = useRef<HTMLDialogElement>(null)
 
   useEffect(() => {
     if (page) {
-      modalRef.current?.showModal();
+      modalRef.current?.showModal()
     }
-  }, [page]);
+  }, [page])
 
   const handleClose = () => {
-    modalRef.current?.close();
-    onClose();
-  };
+    modalRef.current?.close()
+    onClose()
+  }
 
   return (
     <dialog ref={modalRef} className="modal" onClose={onClose}>
       <div className="modal-box max-w-7xl w-full max-h-[90vh] p-0">
         {/* Close button */}
-        <button
-          className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10"
-          onClick={handleClose}
-        >
+        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 z-10" onClick={handleClose}>
           <HiX className="h-5 w-5" />
         </button>
 
@@ -47,7 +44,7 @@ function PageDetailsDialog({ page, onClose, products }: Props) {
         <button onClick={handleClose}>close</button>
       </form>
     </dialog>
-  );
+  )
 }
 
-export default PageDetailsDialog;
+export default PageDetailsDialog

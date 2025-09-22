@@ -1,26 +1,26 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from 'react'
 import {
   HiOutlineArrowUturnRight,
   HiOutlineClock,
   HiOutlineGlobeAlt,
   HiOutlineShieldCheck,
   HiOutlineUser,
-} from "react-icons/hi2";
-import { HiOutlineReply, HiX } from "react-icons/hi";
-import { BlogComment } from "@utils/utils.interfaces";
-import { AppTabState } from "@application/AppCore";
+} from 'react-icons/hi2'
+import { HiOutlineReply, HiX } from 'react-icons/hi'
+import { BlogComment } from '@utils/utils.interfaces'
+import { AppTabState } from '@application/AppCore'
 
 interface CommentReplyModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  parentComment: BlogComment | null;
+  isOpen: boolean
+  onClose: () => void
+  parentComment: BlogComment | null
   onSubmit: (replyData: {
-    comment: string;
-    internal: boolean;
-    authorName?: string;
-    authorEmail?: string;
-  }) => Promise<void>;
-  className?: string;
+    comment: string
+    internal: boolean
+    authorName?: string
+    authorEmail?: string
+  }) => Promise<void>
+  className?: string
   state: AppTabState
 }
 
@@ -30,123 +30,117 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
   parentComment,
   onSubmit,
   state,
-  className = "",
+  className = '',
 }) => {
-  const [replyContent, setReplyContent] = useState("");
-  const [authorName, setAuthorName] = useState(state.brandDetails?.name || "");
-  const [authorEmail, setAuthorEmail] = useState(state.brandDetails?.support.email || "");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [replyContent, setReplyContent] = useState('')
+  const [authorName, setAuthorName] = useState(state.brandDetails?.name || '')
+  const [authorEmail, setAuthorEmail] = useState(state.brandDetails?.support.email || '')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const modalRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
 
   // Reset form when modal opens/closes
   useEffect(() => {
     if (isOpen) {
-      setReplyContent("");
-      setAuthorName(state.brandDetails?.name || "");
-      setAuthorEmail(state.brandDetails?.support.email || "");
-      setShowPreview(false);
+      setReplyContent('')
+      setAuthorName(state.brandDetails?.name || '')
+      setAuthorEmail(state.brandDetails?.support.email || '')
+      setShowPreview(false)
       // Focus textarea after modal animation
-      setTimeout(() => textareaRef.current?.focus(), 100);
+      setTimeout(() => textareaRef.current?.focus(), 100)
     }
-  }, [isOpen, state.brandDetails]);
+  }, [isOpen, state.brandDetails])
 
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
-        onClose();
+      if (e.key === 'Escape' && isOpen) {
+        onClose()
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isOpen, onClose]);
+    document.addEventListener('keydown', handleEscape)
+    return () => document.removeEventListener('keydown', handleEscape)
+  }, [isOpen, onClose])
 
   // Handle click outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
-        onClose();
+        onClose()
       }
-    };
+    }
 
     if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-      return () =>
-        document.removeEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
     }
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose])
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(date));
-  };
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(new Date(date))
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!replyContent.trim() || !parentComment) return;
+    e.preventDefault()
+    if (!replyContent.trim() || !parentComment) return
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
     try {
       await onSubmit({
         comment: replyContent.trim(),
         internal: true, // All admin replies are internal
         authorName: authorName.trim(),
         authorEmail: authorEmail.trim(),
-      });
-      onClose();
+      })
+      onClose()
     } catch (error) {
-      console.error("Failed to submit reply:", error);
+      console.error('Failed to submit reply:', error)
       // In a real app, you'd show an error toast here
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const insertHtmlTag = (tag: string, hasClosingTag: boolean = true) => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
+    const textarea = textareaRef.current
+    if (!textarea) return
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const selectedText = textarea.value.substring(start, end);
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    const selectedText = textarea.value.substring(start, end)
 
-    let replacement: string;
+    let replacement: string
     if (hasClosingTag) {
-      replacement = selectedText
-        ? `<${tag}>${selectedText}</${tag}>`
-        : `<${tag}></${tag}>`;
+      replacement = selectedText ? `<${tag}>${selectedText}</${tag}>` : `<${tag}></${tag}>`
     } else {
-      replacement = `<${tag}>`;
+      replacement = `<${tag}>`
     }
 
-    const newValue =
-      textarea.value.substring(0, start) +
-      replacement +
-      textarea.value.substring(end);
+    const newValue = textarea.value.substring(0, start) + replacement + textarea.value.substring(end)
 
-    setReplyContent(newValue);
+    setReplyContent(newValue)
 
     // Set the cursor position
     setTimeout(() => {
       const newPosition =
         hasClosingTag && !selectedText
           ? start + tag.length + 2 // Position between opening and closing tags
-          : start + replacement.length;
-      textarea.setSelectionRange(newPosition, newPosition);
-      textarea.focus();
-    }, 0);
-  };
+          : start + replacement.length
+      textarea.setSelectionRange(newPosition, newPosition)
+      textarea.focus()
+    }, 0)
+  }
 
-  if (!isOpen || !parentComment) return null;
+  if (!isOpen || !parentComment) return null
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -167,15 +161,10 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                 Reply to Comment
               </h2>
               <p className="text-sm text-base-content/60 mt-1">
-                Responding to {parentComment.name} on "{parentComment.blogTitle}
-                " (Internal Reply)
+                {`Responding to ${parentComment.name} on "${parentComment.blogTitle}" (Internal Reply)`}
               </p>
             </div>
-            <button
-              onClick={onClose}
-              className="btn btn-ghost btn-sm btn-circle"
-              aria-label="Close modal"
-            >
+            <button onClick={onClose} className="btn btn-ghost btn-sm btn-circle" aria-label="Close modal">
               <HiX className="h-5 w-5" />
             </button>
           </div>
@@ -203,9 +192,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                 </div>
                 <div className="flex items-center gap-2">
                   <HiOutlineArrowUturnRight className="h-4 w-4 text-base-content/60" />
-                  <span className="text-xs text-base-content/60">
-                    Replying to this comment
-                  </span>
+                  <span className="text-xs text-base-content/60">Replying to this comment</span>
                 </div>
               </div>
               <div
@@ -251,21 +238,19 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
               {/* Content Editor */}
               <div className="form-control">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="label-text font-medium">
-                    Reply Content
-                  </label>
+                  <label className="label-text font-medium">Reply Content</label>
                   <div className="flex items-center gap-2">
                     <div className="join">
                       <button
                         type="button"
-                        className={`btn btn-xs join-item ${!showPreview ? "btn-active" : ""}`}
+                        className={`btn btn-xs join-item ${!showPreview ? 'btn-active' : ''}`}
                         onClick={() => setShowPreview(false)}
                       >
                         Edit
                       </button>
                       <button
                         type="button"
-                        className={`btn btn-xs join-item ${showPreview ? "btn-active" : ""}`}
+                        className={`btn btn-xs join-item ${showPreview ? 'btn-active' : ''}`}
                         onClick={() => setShowPreview(true)}
                       >
                         Preview
@@ -281,7 +266,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("strong")}
+                        onClick={() => insertHtmlTag('strong')}
                         title="Bold"
                       >
                         <strong>B</strong>
@@ -289,7 +274,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("em")}
+                        onClick={() => insertHtmlTag('em')}
                         title="Italic"
                       >
                         <em>I</em>
@@ -297,7 +282,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("u")}
+                        onClick={() => insertHtmlTag('u')}
                         title="Underline"
                       >
                         <u>U</u>
@@ -306,7 +291,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("p")}
+                        onClick={() => insertHtmlTag('p')}
                         title="Paragraph"
                       >
                         P
@@ -314,7 +299,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("ul")}
+                        onClick={() => insertHtmlTag('ul')}
                         title="Bulleted List"
                       >
                         • List
@@ -322,7 +307,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("li")}
+                        onClick={() => insertHtmlTag('li')}
                         title="List Item"
                       >
                         Li
@@ -330,7 +315,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                       <button
                         type="button"
                         className="btn btn-xs btn-ghost"
-                        onClick={() => insertHtmlTag("br", false)}
+                        onClick={() => insertHtmlTag('br', false)}
                         title="Line Break"
                       >
                         BR
@@ -353,14 +338,9 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
                 ) : (
                   <div className="min-h-[200px] p-4 border border-base-300 rounded-lg bg-base-50">
                     {replyContent ? (
-                      <div
-                        className="prose prose-sm max-w-none"
-                        dangerouslySetInnerHTML={{ __html: replyContent }}
-                      />
+                      <div className="prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: replyContent }} />
                     ) : (
-                      <div className="text-base-content/50 italic">
-                        Your reply preview will appear here...
-                      </div>
+                      <div className="text-base-content/50 italic">Your reply preview will appear here...</div>
                     )}
                   </div>
                 )}
@@ -377,23 +357,13 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
               <span>Reply will be posted to: {parentComment.blogTitle}</span>
             </div>
             <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="btn btn-ghost"
-                disabled={isSubmitting}
-              >
+              <button type="button" onClick={onClose} className="btn btn-ghost" disabled={isSubmitting}>
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
                 className="btn btn-primary"
-                disabled={
-                  isSubmitting ||
-                  !replyContent.trim() ||
-                  !authorName.trim() ||
-                  !authorEmail.trim()
-                }
+                disabled={isSubmitting || !replyContent.trim() || !authorName.trim() || !authorEmail.trim()}
               >
                 {isSubmitting ? (
                   <>
@@ -412,7 +382,7 @@ const CommentReplyModal: React.FC<CommentReplyModalProps> = ({
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default CommentReplyModal;
+export default CommentReplyModal

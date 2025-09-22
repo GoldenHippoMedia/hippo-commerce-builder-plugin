@@ -1,34 +1,34 @@
-import { ModelShape } from "../HippoModels";
+import { ModelShape } from '../HippoModels'
 
 export interface PageModelFactoryProps {
-  productModelId: string;
-  productGroupModelId: string;
-  categoryModelId: string;
-  bannerModelId: string;
-  blogCategoryModelId: string;
-  editUrl: string;
+  productModelId: string
+  productGroupModelId: string
+  categoryModelId: string
+  bannerModelId: string
+  blogCategoryModelId: string
+  editUrl: string
 }
 
 export enum PageTypes {
-  GENERAL = "General",
-  PRODUCT = "Product",
-  BLOG = "Blog",
+  GENERAL = 'General',
+  PRODUCT = 'Product',
+  BLOG = 'Blog',
 }
 
 export enum PdpTypes {
-  PRODUCT = "Product",
-  PRODUCT_GROUP = "Product Group",
+  PRODUCT = 'Product',
+  PRODUCT_GROUP = 'Product Group',
 }
 
 export enum OfferSelectorTypes {
-  VERTICAL = "Vertical",
-  VERTICAL__FLAVOR_DROPDOWN__TYPE_TOGGLE = "Vertical - Flavor Dropdown - Type Toggle",
-  STACKED__FLAVOR_BUTTONS__QUANTITY_TOGGLE = "Stacked - Flavor Buttons - Quantity Toggle",
+  VERTICAL = 'Vertical',
+  VERTICAL__FLAVOR_DROPDOWN__TYPE_TOGGLE = 'Vertical - Flavor Dropdown - Type Toggle',
+  STACKED__FLAVOR_BUTTONS__QUANTITY_TOGGLE = 'Stacked - Flavor Buttons - Quantity Toggle',
 }
 
 export enum OfferSelectorSliderTypes {
-  SLIDER_A = "Slider A",
-  SLIDER_B = "Slider B",
+  SLIDER_A = 'Slider A',
+  SLIDER_B = 'Slider B',
 }
 
 export enum OfferSelectorDefaultPurchaseType {
@@ -42,92 +42,84 @@ export enum OfferSelectorSavingsType {
 }
 
 export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
-  const {
-    productModelId,
-    productGroupModelId,
-    categoryModelId,
-    bannerModelId,
-    blogCategoryModelId,
-    editUrl,
-  } = props;
+  const { productModelId, productGroupModelId, categoryModelId, bannerModelId, blogCategoryModelId, editUrl } = props
   return {
-    name: "page",
-    displayName: "Page",
-    kind: "page",
-    helperText: "Default model for creating pages",
+    name: 'page',
+    displayName: 'Page',
+    kind: 'page',
+    helperText: 'Default model for creating pages',
     contentTitleField: undefined,
     fields: [
       {
-        name: "title",
-        friendlyName: "Title",
-        type: "text",
+        name: 'title',
+        friendlyName: 'Title',
+        type: 'text',
         required: true,
         helperText:
-          "A short title for this page. If the SEO Page Title is not provided, this field is used for SEO. This field is not localized, so it is highly suggested to use the Heading.",
+          'A short title for this page. If the SEO Page Title is not provided, this field is used for SEO. This field is not localized, so it is highly suggested to use the Heading.',
         defaultCollapsed: false,
       },
       {
-        name: "pageType",
-        friendlyName: "Page Type",
-        type: "select",
+        name: 'pageType',
+        friendlyName: 'Page Type',
+        type: 'select',
         defaultValue: PageTypes.GENERAL,
         required: true,
-        helperText:
-          "Select the type of page. This will determine which components are added automatically.",
+        helperText: 'Select the type of page. This will determine which components are added automatically.',
         enum: [PageTypes.GENERAL, PageTypes.BLOG, PageTypes.PRODUCT],
         defaultCollapsed: false,
       },
       {
-        name: "pdp",
-        friendlyName: "Product Detail Page",
-        type: "object",
+        name: 'pdp',
+        friendlyName: 'Product Detail Page',
+        type: 'object',
         required: false,
         subFields: [
           {
-            name: "type",
-            friendlyName: "Type",
-            type: "select",
+            name: 'type',
+            friendlyName: 'Type',
+            type: 'select',
             defaultValue: PdpTypes.PRODUCT,
             required: true,
-            helperText: "",
+            helperText: '',
             enum: [PdpTypes.PRODUCT, PdpTypes.PRODUCT_GROUP],
             defaultCollapsed: false,
           },
           {
-            name: "product",
-            friendlyName: "Product",
-            type: "reference",
+            name: 'product',
+            friendlyName: 'Product',
+            type: 'reference',
             required: false,
-            helperText: "Select the product to display",
+            helperText: 'Select the product to display',
             modelId: productModelId,
             copyOnAdd: true,
             showIf: "return options.get('type') === 'Product'",
             defaultCollapsed: false,
           },
           {
-            name: "productGroup",
-            friendlyName: "Product Group",
-            type: "reference",
+            name: 'productGroup',
+            friendlyName: 'Product Group',
+            type: 'reference',
             required: false,
-            helperText: "",
+            helperText: '',
             modelId: productGroupModelId,
             copyOnAdd: true,
             showIf: "return options.get('type') === 'Product Group'",
             defaultCollapsed: false,
           },
           {
-            name: "slides",
-            friendlyName: "Product Slides",
-            type: "list",
+            name: 'slides',
+            friendlyName: 'Product Slides',
+            type: 'list',
             required: false,
             subFields: [
               {
-                name: "image",
-                friendlyName: "Image",
-                type: "file",
+                name: 'image',
+                friendlyName: 'Image',
+                type: 'file',
                 required: true,
-                helperText: "",
-                allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+                helperText: '',
+                allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
                 copyOnAdd: true,
                 defaultCollapsed: false,
               },
@@ -138,75 +130,72 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
             defaultCollapsed: false,
           },
           {
-            name: "slideThumbs",
-            friendlyName: "Product Slides Thumbnails",
-            type: "list",
+            name: 'slideThumbs',
+            friendlyName: 'Product Slides Thumbnails',
+            type: 'list',
             required: false,
             subFields: [
               {
-                name: "image",
-                friendlyName: "Image",
-                type: "file",
+                name: 'image',
+                friendlyName: 'Image',
+                type: 'file',
                 required: true,
-                helperText: "",
-                allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+                helperText: '',
+                allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
                 copyOnAdd: true,
                 defaultCollapsed: false,
               },
             ],
             helperText:
-              "Select the image thumbnails slides to display for this product. If no slides are provided, the Product Slides will be used",
+              'Select the image thumbnails slides to display for this product. If no slides are provided, the Product Slides will be used',
             copyOnAdd: true,
             defaultCollapsed: false,
           },
           {
-            name: "sliderComponent",
-            type: "select",
+            name: 'sliderComponent',
+            type: 'select',
             enum: [OfferSelectorSliderTypes.SLIDER_A, OfferSelectorSliderTypes.SLIDER_B],
-            friendlyName: "Slider Component",
+            friendlyName: 'Slider Component',
             defaultValue: OfferSelectorSliderTypes.SLIDER_A,
             required: false,
-            helperText:
-              "Select the style slider component to use for the product images",
+            helperText: 'Select the style slider component to use for the product images',
             defaultCollapsed: false,
           },
           {
-            name: "offerSelector",
-            friendlyName: "Offer Selector",
-            type: "object",
+            name: 'offerSelector',
+            friendlyName: 'Offer Selector',
+            type: 'object',
             defaultValue: {
               labels: {
                 scrollButton: {
-                  Default:
-                    '<span class="material-icons">keyboard_arrow_up</span> Back to top',
+                  Default: '<span class="material-icons">keyboard_arrow_up</span> Back to top',
                 },
                 subscriptionOffer: {
-                  Default: "Or $PRICE when you subscribe & save",
+                  Default: 'Or $PRICE when you subscribe & save',
                 },
                 memberOffer: {
-                  Default: "Or pay member price of",
+                  Default: 'Or pay member price of',
                 },
                 outOfStockFormSuccess: {
-                  Default:
-                    '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
+                  Default: '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
                 },
                 outOfStock: {
                   Default: "Sorry, we're currently out of stock",
                 },
                 subscriptionToggle: {
-                  Default: "Subscribe & save",
+                  Default: 'Subscribe & save',
                 },
                 otpToggle: {
-                  Default: "Single purchase",
+                  Default: 'Single purchase',
                 },
                 actionButton: {
-                  Default: "ADD TO CART",
+                  Default: 'ADD TO CART',
                 },
                 flavorSelector: {
-                  Default: "Choose a flavor",
+                  Default: 'Choose a flavor',
                 },
               },
-              osType: "Vertical - Flavor Dropdown - Type Toggle",
+              osType: 'Vertical - Flavor Dropdown - Type Toggle',
               cssOverrides: {},
               features: {
                 savingsType: {},
@@ -219,13 +208,12 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
             required: false,
             subFields: [
               {
-                name: "osType",
-                friendlyName: "Type",
-                type: "select",
-                defaultValue:
-                  OfferSelectorTypes.VERTICAL__FLAVOR_DROPDOWN__TYPE_TOGGLE,
+                name: 'osType',
+                friendlyName: 'Type',
+                type: 'select',
+                defaultValue: OfferSelectorTypes.VERTICAL__FLAVOR_DROPDOWN__TYPE_TOGGLE,
                 required: false,
-                helperText: "Select the type of offer selector to display",
+                helperText: 'Select the type of offer selector to display',
                 enum: [
                   OfferSelectorTypes.VERTICAL,
                   OfferSelectorTypes.VERTICAL__FLAVOR_DROPDOWN__TYPE_TOGGLE,
@@ -234,73 +222,69 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
                 defaultCollapsed: false,
               },
               {
-                name: "features",
-                friendlyName: "Features",
-                type: "object",
+                name: 'features',
+                friendlyName: 'Features',
+                type: 'object',
                 required: false,
                 subFields: [
                   {
-                    name: "defaultPurchaseType",
-                    friendlyName: "Default Purchase Type",
-                    type: "select",
+                    name: 'defaultPurchaseType',
+                    friendlyName: 'Default Purchase Type',
+                    type: 'select',
                     defaultValue: OfferSelectorDefaultPurchaseType.ONE_TIME,
                     required: false,
                     helperText:
-                      "When both purchase options are available to the customer, this is the option that will be selected by default.",
-                    enum: [
-                      OfferSelectorDefaultPurchaseType.ONE_TIME,
-                      OfferSelectorDefaultPurchaseType.SUBSCRIPTION
-                    ],
+                      'When both purchase options are available to the customer, this is the option that will be selected by default.',
+                    enum: [OfferSelectorDefaultPurchaseType.ONE_TIME, OfferSelectorDefaultPurchaseType.SUBSCRIPTION],
                     defaultCollapsed: false,
                   },
                   {
-                    name: "showSavings",
-                    friendlyName: "Show Savings?",
-                    type: "boolean",
+                    name: 'showSavings',
+                    friendlyName: 'Show Savings?',
+                    type: 'boolean',
                     defaultValue: {
                       Default: true,
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "savingsType",
-                    friendlyName: "Savings Type",
-                    type: "select",
+                    name: 'savingsType',
+                    friendlyName: 'Savings Type',
+                    type: 'select',
                     defaultValue: OfferSelectorSavingsType.PERCENT,
                     required: false,
-                    helperText:
-                      "When showing savings, display as a percentage or value saved.",
+                    helperText: 'When showing savings, display as a percentage or value saved.',
                     enum: [OfferSelectorSavingsType.PERCENT, OfferSelectorSavingsType.DOLLAR],
                     defaultCollapsed: false,
                   },
                   {
-                    name: "showMemberPriceMessage",
-                    friendlyName: "Show Member Price Message",
-                    type: "boolean",
+                    name: 'showMemberPriceMessage',
+                    friendlyName: 'Show Member Price Message',
+                    type: 'boolean',
                     defaultValue: {
                       Default: true,
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "showSubscriptionPriceMessage",
-                    friendlyName: "Show Subscription Price Message",
-                    type: "boolean",
+                    name: 'showSubscriptionPriceMessage',
+                    friendlyName: 'Show Subscription Price Message',
+                    type: 'boolean',
                     defaultValue: {
                       Default: true,
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "scrollToTopOffset",
-                    friendlyName: "Scroll to Top Offset (px)",
-                    type: "number",
+                    name: 'scrollToTopOffset',
+                    friendlyName: 'Scroll to Top Offset (px)',
+                    type: 'number',
                     defaultValue: 170,
                     required: false,
                     helperText:
@@ -308,310 +292,297 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
                     defaultCollapsed: false,
                   },
                   {
-                    name: "alwaysShowSubscriptions",
-                    friendlyName: "Always Show Subscriptions",
-                    type: "boolean",
+                    name: 'alwaysShowSubscriptions',
+                    friendlyName: 'Always Show Subscriptions',
+                    type: 'boolean',
                     defaultValue: {},
                     required: false,
                     helperText:
-                      "Enable this to present subscriptions (when available) to non-MyAccount visitors. By default, a user must be logged in to access this option.",
+                      'Enable this to present subscriptions (when available) to non-MyAccount visitors. By default, a user must be logged in to access this option.',
                     defaultCollapsed: false,
                     hidden: true,
                   },
                 ],
-                helperText: "",
+                helperText: '',
                 defaultCollapsed: false,
               },
               {
-                name: "labels",
-                friendlyName: "Labels",
-                type: "object",
+                name: 'labels',
+                friendlyName: 'Labels',
+                type: 'object',
                 defaultValue: {
                   subscriptionOffer: {
-                    Default: "Or $PRICE when you subscribe & save",
+                    Default: 'Or $PRICE when you subscribe & save',
                   },
                   subscriptionToggle: {
-                    Default: "Subscribe & save",
+                    Default: 'Subscribe & save',
                   },
                   scrollButton: {
-                    Default:
-                      '<span class="material-icons">keyboard_arrow_up</span> Back to top',
+                    Default: '<span class="material-icons">keyboard_arrow_up</span> Back to top',
                   },
                   actionButton: {
-                    Default: "ADD TO CART",
+                    Default: 'ADD TO CART',
                   },
                   outOfStockFormSuccess: {
-                    Default:
-                      '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
+                    Default: '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
                   },
                   otpToggle: {
-                    Default: "Single purchase",
+                    Default: 'Single purchase',
                   },
                   flavorSelector: {
-                    Default: "Choose a flavor",
+                    Default: 'Choose a flavor',
                   },
                   outOfStock: {
                     Default: 'Sorry, we"re currently out of stock',
                   },
                   memberOffer: {
-                    Default: "Or pay member price of",
+                    Default: 'Or pay member price of',
                   },
                 },
                 required: false,
                 subFields: [
                   {
-                    name: "actionButton",
-                    friendlyName: "Action Button",
-                    type: "text",
+                    name: 'actionButton',
+                    friendlyName: 'Action Button',
+                    type: 'text',
                     defaultValue: {
-                      Default: "ADD TO CART",
+                      Default: 'ADD TO CART',
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "subscriptionOffer",
-                    friendlyName: "Subscription Offer",
-                    type: "text",
+                    name: 'subscriptionOffer',
+                    friendlyName: 'Subscription Offer',
+                    type: 'text',
                     defaultValue: {
-                      Default: "Or $PRICE when you subscribe & save",
+                      Default: 'Or $PRICE when you subscribe & save',
                     },
                     required: false,
-                    helperText:
-                      "Use $PRICE to represent the price, this will be automatically replaced.",
+                    helperText: 'Use $PRICE to represent the price, this will be automatically replaced.',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "memberOffer",
-                    friendlyName: "Member Offer",
-                    type: "text",
+                    name: 'memberOffer',
+                    friendlyName: 'Member Offer',
+                    type: 'text',
                     defaultValue: {
-                      Default: "Or pay member price of",
+                      Default: 'Or pay member price of',
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "subscriptionToggle",
-                    friendlyName: "Subscription Toggle",
-                    type: "text",
+                    name: 'subscriptionToggle',
+                    friendlyName: 'Subscription Toggle',
+                    type: 'text',
                     defaultValue: {
-                      Default: "Subscribe & save",
+                      Default: 'Subscribe & save',
                     },
                     required: false,
-                    helperText:
-                      "The label for the button when selecting a subscription",
+                    helperText: 'The label for the button when selecting a subscription',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "otpToggle",
-                    friendlyName: "One-Time Purchase Toggle",
-                    type: "text",
+                    name: 'otpToggle',
+                    friendlyName: 'One-Time Purchase Toggle',
+                    type: 'text',
                     defaultValue: {
-                      Default: "Single purchase",
+                      Default: 'Single purchase',
                     },
                     required: false,
-                    helperText:
-                      "The label for the button when selecting a single purchase (otp).",
+                    helperText: 'The label for the button when selecting a single purchase (otp).',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "outOfStock",
-                    friendlyName: "Out of Stock",
-                    type: "text",
+                    name: 'outOfStock',
+                    friendlyName: 'Out of Stock',
+                    type: 'text',
                     defaultValue: {
                       Default: 'Sorry, we"re currently out of stock',
                     },
                     required: false,
-                    helperText:
-                      "The text to display when this product is marked as Out of Stock.",
+                    helperText: 'The text to display when this product is marked as Out of Stock.',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "outOfStockFormSuccess",
-                    friendlyName: "OOS Form Success Message",
-                    type: "html",
+                    name: 'outOfStockFormSuccess',
+                    friendlyName: 'OOS Form Success Message',
+                    type: 'html',
                     defaultValue: {
-                      Default:
-                        '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
+                      Default: '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
                     },
                     required: false,
                     helperText:
-                      "The message displayed when a user requests to be notified when this product is back in stock.",
+                      'The message displayed when a user requests to be notified when this product is back in stock.',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "scrollButton",
-                    friendlyName: "Scroll Button Content",
-                    type: "html",
+                    name: 'scrollButton',
+                    friendlyName: 'Scroll Button Content',
+                    type: 'html',
                     defaultValue: {
-                      Default:
-                        '<span class="material-icons">keyboard_arrow_up</span> Back to top',
+                      Default: '<span class="material-icons">keyboard_arrow_up</span> Back to top',
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "flavorSelector",
-                    friendlyName: "Flavor / Option Selector",
-                    type: "text",
+                    name: 'flavorSelector',
+                    friendlyName: 'Flavor / Option Selector',
+                    type: 'text',
                     defaultValue: {
-                      Default: "Choose a flavor",
+                      Default: 'Choose a flavor',
                     },
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                 ],
-                helperText:
-                  "Customize the various labels on the offer selector",
+                helperText: 'Customize the various labels on the offer selector',
                 defaultCollapsed: false,
               },
               {
-                name: "bestSellerImage",
-                friendlyName: "Best Seller Image",
-                type: "file",
-                allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+                name: 'bestSellerImage',
+                friendlyName: 'Best Seller Image',
+                type: 'file',
+                allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
                 defaultValue:
-                  "https://cdn.builder.io/api/v1/image/assets%2Fcf992cf7343c4ca182a884e9a45f394e%2F3805efcc18184db8bccf74d5c5aaf891?format=webp",
+                  'https://cdn.builder.io/api/v1/image/assets%2Fcf992cf7343c4ca182a884e9a45f394e%2F3805efcc18184db8bccf74d5c5aaf891?format=webp',
                 required: false,
-                helperText:
-                  "The small image to display alongside the best seller offer",
+                helperText: 'The small image to display alongside the best seller offer',
                 defaultCollapsed: true,
               },
               {
-                name: "bestValueImage",
-                friendlyName: "Best Value Image",
-                type: "file",
+                name: 'bestValueImage',
+                friendlyName: 'Best Value Image',
+                type: 'file',
                 defaultValue:
-                  "https://cdn.builder.io/api/v1/image/assets%2Fcf992cf7343c4ca182a884e9a45f394e%2F82105508987e4459bc4405617d4bee33",
+                  'https://cdn.builder.io/api/v1/image/assets%2Fcf992cf7343c4ca182a884e9a45f394e%2F82105508987e4459bc4405617d4bee33',
                 required: false,
-                helperText:
-                  "The small image to display alongside the best value offer (highest quantity)",
-                allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+                helperText: 'The small image to display alongside the best value offer (highest quantity)',
+                allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
                 defaultCollapsed: true,
               },
               {
-                name: "cssOverrides",
-                friendlyName: "CSS Properties",
-                type: "object",
+                name: 'cssOverrides',
+                friendlyName: 'CSS Properties',
+                type: 'object',
                 defaultValue: {},
                 required: false,
                 subFields: [
                   {
-                    name: "signupOfferCustomCssProps",
-                    friendlyName: "Signup Offer CSS",
-                    type: "map",
+                    name: 'signupOfferCustomCssProps',
+                    friendlyName: 'Signup Offer CSS',
+                    type: 'map',
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                   {
-                    name: "signupOfferPriceCustomCssProps",
-                    friendlyName: "Signup Offer Price CSS",
-                    type: "map",
+                    name: 'signupOfferPriceCustomCssProps',
+                    friendlyName: 'Signup Offer Price CSS',
+                    type: 'map',
                     required: false,
-                    helperText: "",
+                    helperText: '',
                     defaultCollapsed: false,
                   },
                 ],
-                helperText: "",
+                helperText: '',
                 defaultCollapsed: true,
               },
             ],
-            helperText: "Configure the offer selector to display.",
+            helperText: 'Configure the offer selector to display.',
             defaultCollapsed: true,
           },
           {
-            name: "category",
-            type: "reference",
+            name: 'category',
+            type: 'reference',
             required: false,
-            helperText: "Provide the category to display breadcrumb navigation",
+            helperText: 'Provide the category to display breadcrumb navigation',
             modelId: categoryModelId,
             copyOnAdd: true,
-            friendlyName: "Category",
+            friendlyName: 'Category',
             defaultCollapsed: false,
           },
         ],
-        helperText: "Configure the PDP options",
+        helperText: 'Configure the PDP options',
         showIf: "return options.get('pageType') === 'Product'",
         defaultCollapsed: false,
       },
       {
-        name: "blog",
-        friendlyName: "Blog Configuration",
-        type: "object",
+        name: 'blog',
+        friendlyName: 'Blog Configuration',
+        type: 'object',
         required: false,
         subFields: [
           {
-            name: "title",
-            friendlyName: "Blog Title",
+            name: 'title',
+            friendlyName: 'Blog Title',
             helperText:
-              "Provide a title for this blog when shown on a grid or list. If not provided, the page" +
-              " title will be used.",
-            type: "text",
+              'Provide a title for this blog when shown on a grid or list. If not provided, the page' +
+              ' title will be used.',
+            type: 'text',
             required: false,
             localized: true,
             defaultCollapsed: false,
           },
           {
-            name: "publicationDate",
-            friendlyName: "Publication Date",
-            type: "timestamp",
-            helperText:
-              "Provide the publication date, this is used for sorting.",
+            name: 'publicationDate',
+            friendlyName: 'Publication Date',
+            type: 'timestamp',
+            helperText: 'Provide the publication date, this is used for sorting.',
             required: true,
             localized: false,
             defaultCollapsed: false,
           },
           {
-            name: "snippet",
-            friendlyName: "Blog Snippet",
+            name: 'snippet',
+            friendlyName: 'Blog Snippet',
             helperText:
-              "Provide a snippet of the blog to display when shown on a grid or list. If not provided," +
-              " we will attempt to use the page description or SEO description (if available)",
-            type: "longText",
+              'Provide a snippet of the blog to display when shown on a grid or list. If not provided,' +
+              ' we will attempt to use the page description or SEO description (if available)',
+            type: 'longText',
             required: false,
             localized: true,
             defaultCollapsed: false,
           },
           {
-            name: "author",
-            friendlyName: "Blog Author",
-            type: "text",
-            helperText:
-              "Provide an author for this blog to display when shown on a grid or list.",
+            name: 'author',
+            friendlyName: 'Blog Author',
+            type: 'text',
+            helperText: 'Provide an author for this blog to display when shown on a grid or list.',
             required: false,
             localized: false,
             defaultCollapsed: false,
           },
           {
-            name: "thumbnail",
-            friendlyName: "Blog Thumbnail",
-            type: "file",
+            name: 'thumbnail',
+            friendlyName: 'Blog Thumbnail',
+            type: 'file',
             required: false,
             helperText:
-              "Provide an image to display when shown on a grid or list. If not provided, we will" +
-              " attempt to use the SEO image (if available)",
-            allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+              'Provide an image to display when shown on a grid or list. If not provided, we will' +
+              ' attempt to use the SEO image (if available)',
+            allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
             copyOnAdd: true,
             defaultCollapsed: false,
           },
           {
-            name: "categories",
-            friendlyName: "Blog Categories",
-            type: "list",
+            name: 'categories',
+            friendlyName: 'Blog Categories',
+            type: 'list',
             required: false,
             copyOnAdd: true,
             defaultCollapsed: true,
             subFields: [
               {
-                name: "category",
-                friendlyName: "Blog Category",
-                type: "reference",
+                name: 'category',
+                friendlyName: 'Blog Category',
+                type: 'reference',
                 modelId: blogCategoryModelId,
                 required: true,
                 defaultCollapsed: false,
@@ -620,78 +591,75 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
             ],
           },
         ],
-        helperText: "Configure the blog options",
+        helperText: 'Configure the blog options',
         showIf: "return options.get('pageType') === 'Blog'",
         defaultCollapsed: true,
       },
       {
-        name: "heading",
-        friendlyName: "SEO Page Title",
-        type: "text",
+        name: 'heading',
+        friendlyName: 'SEO Page Title',
+        type: 'text',
         required: false,
-        helperText:
-          "Provide an alternate page title to use for SEO purposes (if blank, the page title is used)",
+        helperText: 'Provide an alternate page title to use for SEO purposes (if blank, the page title is used)',
         defaultCollapsed: false,
       },
       {
-        name: "description",
-        friendlyName: "SEO Description",
-        type: "longText",
+        name: 'description',
+        friendlyName: 'SEO Description',
+        type: 'longText',
         required: false,
-        helperText:
-          "Set the page description for SEO here. This is automatically embedded in your page.",
+        helperText: 'Set the page description for SEO here. This is automatically embedded in your page.',
         defaultCollapsed: true,
       },
       {
-        name: "seoImage",
-        friendlyName: "SEO Image",
-        type: "file",
+        name: 'seoImage',
+        friendlyName: 'SEO Image',
+        type: 'file',
         required: false,
-        helperText: "Provide an image to be used for SEO purposes",
-        allowedFileTypes: ["jpeg", "png", "svg", "webp"],
+        helperText: 'Provide an image to be used for SEO purposes',
+        allowedFileTypes: ['jpeg', 'png', 'svg', 'webp'],
         copyOnAdd: true,
         defaultCollapsed: false,
       },
       {
-        name: "search",
-        friendlyName: "Search Configuration",
-        type: "object",
+        name: 'search',
+        friendlyName: 'Search Configuration',
+        type: 'object',
         required: false,
         subFields: [
           {
-            name: "title",
-            friendlyName: "Search Title",
-            type: "text",
+            name: 'title',
+            friendlyName: 'Search Title',
+            type: 'text',
             required: false,
             helperText:
               "Used when showing this page in your site's search function. If no value is provided, the page title will be used.",
             defaultCollapsed: false,
           },
           {
-            name: "description",
-            friendlyName: "Search Description",
-            type: "text",
+            name: 'description',
+            friendlyName: 'Search Description',
+            type: 'text',
             required: false,
             helperText:
-              "(Optional) Provide a description to be used when showing this page in search results. If no value is provided, the SEO description is used.",
+              '(Optional) Provide a description to be used when showing this page in search results. If no value is provided, the SEO description is used.',
             defaultCollapsed: false,
           },
           {
-            name: "hide",
-            friendlyName: "Hide from Search",
-            type: "boolean",
+            name: 'hide',
+            friendlyName: 'Hide from Search',
+            type: 'boolean',
             required: false,
-            helperText:
-              "Use this to hide this page from search results. This does not prevent navigation to the page.",
+            helperText: 'Use this to hide this page from search results. This does not prevent navigation to the page.',
             defaultCollapsed: false,
           },
           {
-            name: "content",
-            friendlyName: "Content",
-            type: "longText",
+            name: 'content',
+            friendlyName: 'Content',
+            type: 'longText',
             required: false,
             helperText:
-              "(Optional) Use this field to add keywords or phrases to assist in search results (e.g. related products, categories, key words, etc.)",
+              '(Optional) Use this field to add keywords or phrases to assist in search results (e.g. related products, categories, key words, etc.)',
             defaultCollapsed: false,
           },
         ],
@@ -700,22 +668,22 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
         defaultCollapsed: true,
       },
       {
-        "@type": "@builder.io/core:Field",
-        name: "banners",
-        friendlyName: "Banners",
+        '@type': '@builder.io/core:Field',
+        name: 'banners',
+        friendlyName: 'Banners',
         helperText: `Select the banner(s) to display on this page. These will be displayed in the
           order provided, but always below site-wide banners.`,
-        type: "list",
+        type: 'list',
         defaultCollapsed: true,
         localized: false,
         subFields: [
           {
-            "@type": "@builder.io/core:Field",
-            name: "banner",
-            friendlyName: "Sitewide Banner",
-            type: "reference",
+            '@type': '@builder.io/core:Field',
+            name: 'banner',
+            friendlyName: 'Sitewide Banner',
+            type: 'reference',
             localized: false,
-            helperText: "Select the banner to display.",
+            helperText: 'Select the banner to display.',
             defaultCollapsed: true,
             modelId: bannerModelId,
             copyOnAdd: false,
@@ -723,19 +691,16 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
         ],
       },
       {
-        "@type": "@builder.io/core:Field",
-        name: "showBundleDrawer",
-        friendlyName: "Show Bundle Drawer",
-        helperText: "Enable the bundle drawer for this page.",
-        type: "boolean",
+        '@type': '@builder.io/core:Field',
+        name: 'showBundleDrawer',
+        friendlyName: 'Show Bundle Drawer',
+        helperText: 'Enable the bundle drawer for this page.',
+        type: 'boolean',
         localized: false,
         defaultCollapsed: true,
         advanced: true,
       },
     ],
-    editingUrlLogic:
-      "return `" +
-      editUrl +
-      "${targeting.urlPath}?builder.preview=true&builder.frameEditing=true`",
-  };
-};
+    editingUrlLogic: 'return `' + editUrl + '${targeting.urlPath}?builder.preview=true&builder.frameEditing=true`',
+  }
+}

@@ -1,19 +1,18 @@
-import React, { useState } from "react";
-import { AppTabState } from "@application/AppCore";
-import { useObserver } from "mobx-react";
-import BlogCommentList from "@components/blog-comment-list.component";
-import { BlogComment } from "@utils/utils.interfaces";
-import CommentReplyModal from "@components/comment-reply-modal.component";
+import React, { useState } from 'react'
+import { AppTabState } from '@application/AppCore'
+import { useObserver } from 'mobx-react'
+import BlogCommentList from '@components/blog-comment-list.component'
+import { BlogComment } from '@utils/utils.interfaces'
+import CommentReplyModal from '@components/comment-reply-modal.component'
 
 interface Props {
-  state: AppTabState;
+  state: AppTabState
 }
 
 function BlogCommentPage(props: Props) {
-  const { state } = props;
-  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false);
-  const [replyingToComment, setReplyingToComment] =
-    useState<BlogComment | null>(null);
+  const { state } = props
+  const [isReplyModalOpen, setIsReplyModalOpen] = useState(false)
+  const [replyingToComment, setReplyingToComment] = useState<BlogComment | null>(null)
   const handleApprove = (commentId: string) => {
     // setComments(prev =>
     //   prev.map(comment =>
@@ -22,8 +21,8 @@ function BlogCommentPage(props: Props) {
     //       : comment
     //   )
     // );
-    console.log(`Approved comment: ${commentId}`);
-  };
+    console.log(`Approved comment: ${commentId}`)
+  }
 
   const handleReject = (commentId: string) => {
     // setComments(prev =>
@@ -33,51 +32,51 @@ function BlogCommentPage(props: Props) {
     //       : comment
     //   )
     // );
-    console.log(`Rejected comment: ${commentId}`);
-  };
+    console.log(`Rejected comment: ${commentId}`)
+  }
 
   const handleReply = (commentId: string, parentComment: BlogComment) => {
-    setReplyingToComment(parentComment);
-    setIsReplyModalOpen(true);
-  };
+    setReplyingToComment(parentComment)
+    setIsReplyModalOpen(true)
+  }
 
   const handleCloseReplyModal = () => {
-    setIsReplyModalOpen(false);
-    setReplyingToComment(null);
-  };
+    setIsReplyModalOpen(false)
+    setReplyingToComment(null)
+  }
 
   const handleSubmitReply = async (replyData: {
-    comment: string;
-    internal: boolean;
-    authorName?: string;
-    authorEmail?: string;
+    comment: string
+    internal: boolean
+    authorName?: string
+    authorEmail?: string
   }) => {
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000))
 
-    if (!replyingToComment) return;
+    if (!replyingToComment) return
 
     const newReply: BlogComment = {
       id: `reply-${Date.now()}`,
       blogId: replyingToComment.blogId,
       blogTitle: replyingToComment.blogTitle,
-      name: replyData.authorName || state.brandDetails?.name || "",
+      name: replyData.authorName || state.brandDetails?.name || '',
       date: new Date(),
       comment: replyData.comment,
-      locale: "en-US",
-      language: "en",
+      locale: 'en-US',
+      language: 'en',
       parentId: replyingToComment.id,
       internal: replyData.internal,
       blog: replyingToComment.blog,
-      status: "Approved" as const, // Admin replies are auto-approved
-    };
-    console.log("Reply submitted:", newReply);
-  };
+      status: 'Approved' as const, // Admin replies are auto-approved
+    }
+    console.log('Reply submitted:', newReply)
+  }
 
   const handleViewBlog = (blogId: string) => {
-    console.log(`Viewing blog: ${blogId}`);
-    alert(`Navigating to blog: ${blogId}`);
-  };
+    console.log(`Viewing blog: ${blogId}`)
+    alert(`Navigating to blog: ${blogId}`)
+  }
 
   return useObserver(() => (
     <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
@@ -100,7 +99,7 @@ function BlogCommentPage(props: Props) {
         state={state}
       />
     </div>
-  ));
+  ))
 }
 
-export default BlogCommentPage;
+export default BlogCommentPage

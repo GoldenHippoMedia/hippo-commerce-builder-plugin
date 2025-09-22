@@ -1,101 +1,95 @@
-import React, { useState, useCallback } from "react";
-import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
+import React, { useState, useCallback } from 'react'
+import { HiChevronLeft, HiChevronRight } from 'react-icons/hi'
 
 export interface SlideItem {
-  url: string;
-  altText: string;
+  url: string
+  altText: string
 }
 
 interface SliderProps {
-  items: SlideItem[];
-  className?: string;
-  imageClassName?: string;
-  showDots?: boolean;
-  showArrows?: boolean;
-  autoPlay?: boolean;
-  autoPlayInterval?: number;
-  onSlideChange?: (currentIndex: number) => void;
+  items: SlideItem[]
+  className?: string
+  imageClassName?: string
+  showDots?: boolean
+  showArrows?: boolean
+  autoPlay?: boolean
+  autoPlayInterval?: number
+  onSlideChange?: (currentIndex: number) => void
 }
 
 const Slider: React.FC<SliderProps> = ({
   items,
-  className = "",
-  imageClassName = "",
+  className = '',
+  imageClassName = '',
   showDots = true,
   showArrows = true,
   autoPlay = false,
   autoPlayInterval = 5000,
   onSlideChange,
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0)
 
   // Handle empty or single item arrays
   if (!items || items.length === 0) {
     return (
-      <div
-        className={`flex items-center justify-center bg-base-200 rounded-lg h-64 ${className}`}
-      >
+      <div className={`flex items-center justify-center bg-base-200 rounded-lg h-64 ${className}`}>
         <div className="text-base-content/60 text-sm">No images available</div>
       </div>
-    );
+    )
   }
 
   if (items.length === 1) {
     return (
       <div className={`relative rounded-lg overflow-hidden aspect-square ${className} mx-auto`}>
-        <img
-          src={items[0].url}
-          alt={items[0].altText}
-          className={`object-cover w-full h-full ${imageClassName}`}
-        />
+        <img src={items[0].url} alt={items[0].altText} className={`object-cover w-full h-full ${imageClassName}`} />
       </div>
-    );
+    )
   }
 
   const goToSlide = useCallback(
     (index: number) => {
-      const newIndex = Math.max(0, Math.min(index, items.length - 1));
-      setCurrentIndex(newIndex);
-      onSlideChange?.(newIndex);
+      const newIndex = Math.max(0, Math.min(index, items.length - 1))
+      setCurrentIndex(newIndex)
+      onSlideChange?.(newIndex)
     },
     [items.length, onSlideChange],
-  );
+  )
 
   const goToPrevious = useCallback(() => {
-    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1;
-    goToSlide(newIndex);
-  }, [currentIndex, items.length, goToSlide]);
+    const newIndex = currentIndex === 0 ? items.length - 1 : currentIndex - 1
+    goToSlide(newIndex)
+  }, [currentIndex, items.length, goToSlide])
 
   const goToNext = useCallback(() => {
-    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1;
-    goToSlide(newIndex);
-  }, [currentIndex, items.length, goToSlide]);
+    const newIndex = currentIndex === items.length - 1 ? 0 : currentIndex + 1
+    goToSlide(newIndex)
+  }, [currentIndex, items.length, goToSlide])
 
   React.useEffect(() => {
-    if (!autoPlay) return;
+    if (!autoPlay) return
 
-    const interval = setInterval(goToNext, autoPlayInterval);
-    return () => clearInterval(interval);
-  }, [autoPlay, autoPlayInterval, goToNext]);
+    const interval = setInterval(goToNext, autoPlayInterval)
+    return () => clearInterval(interval)
+  }, [autoPlay, autoPlayInterval, goToNext])
 
   // Keyboard navigation
   React.useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "ArrowLeft") {
-        goToPrevious();
-      } else if (event.key === "ArrowRight") {
-        goToNext();
+      if (event.key === 'ArrowLeft') {
+        goToPrevious()
+      } else if (event.key === 'ArrowRight') {
+        goToNext()
       }
-    };
+    }
 
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, [goToPrevious, goToNext]);
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [goToPrevious, goToNext])
 
   return (
     <div
       className={`relative rounded-lg aspect-square overflow-hidden group ${className} mx-auto`}
-      style={{ minHeight: "200px", maxHeight: "600px" }}
+      style={{ minHeight: '200px', maxHeight: '600px' }}
     >
       {/* Main Image Container */}
       <div className="relative w-full h-full aspect-square">
@@ -116,9 +110,9 @@ const Slider: React.FC<SliderProps> = ({
           <button
             type="button"
             onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              goToPrevious();
+              e.preventDefault()
+              e.stopPropagation()
+              goToPrevious()
             }}
             className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50 z-10"
             aria-label="Previous image"
@@ -129,9 +123,9 @@ const Slider: React.FC<SliderProps> = ({
           <button
             type="button"
             onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              goToNext();
+              e.preventDefault()
+              e.stopPropagation()
+              goToNext()
             }}
             className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-white/50 z-10"
             aria-label="Next image"
@@ -149,14 +143,14 @@ const Slider: React.FC<SliderProps> = ({
               key={index}
               type="button"
               onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                goToSlide(index);
+                e.preventDefault()
+                e.stopPropagation()
+                goToSlide(index)
               }}
               className={`w-3 h-3 rounded-full transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-white/50 ${
                 index === currentIndex
-                  ? "bg-white scale-110 shadow-lg"
-                  : "bg-white/60 hover:bg-white/80 hover:scale-105"
+                  ? 'bg-white scale-110 shadow-lg'
+                  : 'bg-white/60 hover:bg-white/80 hover:scale-105'
               }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -171,7 +165,7 @@ const Slider: React.FC<SliderProps> = ({
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Slider;
+export default Slider

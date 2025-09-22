@@ -1,30 +1,30 @@
-import React from "react";
-import { AppTabState } from "@application/AppCore";
-import StatGridContainer from "@components/stat-grid/stat-grid-container.component";
-import StatGridCard from "@components/stat-grid/stat-grid-card.component";
-import { useObserver } from "mobx-react";
-import PageList from "@components/page-list.component";
-import { AiOutlineReload } from "react-icons/ai";
-import { HiOutlineDocumentText } from "react-icons/hi2";
+import React from 'react'
+import { AppTabState } from '@application/AppCore'
+import StatGridContainer from '@components/stat-grid/stat-grid-container.component'
+import StatGridCard from '@components/stat-grid/stat-grid-card.component'
+import { useObserver } from 'mobx-react'
+import PageList from '@components/page-list.component'
+import { AiOutlineReload } from 'react-icons/ai'
+import { HiOutlineDocumentText } from 'react-icons/hi2'
 
 interface Props {
-  state: AppTabState;
+  state: AppTabState
 }
 
 function PageManagerHomePage(props: Props) {
-  const { state } = props;
+  const { state } = props
 
   const blogs = () => {
-    return state.pages.filter((page) => page.pageType === "Blog");
-  };
+    return state.pages.filter((page) => page.pageType === 'Blog')
+  }
 
   const products = () => {
-    return state.pages.filter((page) => page.pageType === "Product");
-  };
+    return state.pages.filter((page) => page.pageType === 'Product')
+  }
 
   const general = () => {
-    return state.pages.filter((page) => page.pageType === "General");
-  };
+    return state.pages.filter((page) => page.pageType === 'General')
+  }
 
   return useObserver(() => (
     <div className="bg-base-100 min-h-screen rounded-lg max-w-7xl mx-auto">
@@ -36,32 +36,30 @@ function PageManagerHomePage(props: Props) {
               <HiOutlineDocumentText className="h-8 w-8" />
               {state.brandDetails?.name} Pages
             </h1>
-            <div className="text-sm text-base-content/60">
-              {state.pages.length} total pages
-            </div>
+            <div className="text-sm text-base-content/60">{state.pages.length} total pages</div>
           </div>
 
           {/* Stats Grid */}
           <div className="mb-6">
             <StatGridContainer>
               <StatGridCard
-                variant={"info"}
-                title={"General"}
-                subtitle={"general pages published"}
+                variant={'info'}
+                title={'General'}
+                subtitle={'general pages published'}
                 metric={general().length}
                 loading={state.loadingPages}
               />
               <StatGridCard
-                variant={"info"}
-                title={"PDP"}
-                subtitle={"product detail pages published"}
+                variant={'info'}
+                title={'PDP'}
+                subtitle={'product detail pages published'}
                 metric={products().length}
                 loading={state.loadingPages}
               />
               <StatGridCard
-                variant={"info"}
-                title={"Blog"}
-                subtitle={"blog pages published"}
+                variant={'info'}
+                title={'Blog'}
+                subtitle={'blog pages published'}
                 metric={blogs().length}
                 loading={state.loadingPages}
               />
@@ -71,14 +69,9 @@ function PageManagerHomePage(props: Props) {
           {/* Actions */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="text-sm text-base-content/70">
-                Manage and audit your website pages
-              </div>
+              <div className="text-sm text-base-content/70">Manage and audit your website pages</div>
             </div>
-            <button
-              className="btn btn-secondary btn-sm"
-              onClick={state.loadPages}
-            >
+            <button className="btn btn-secondary btn-sm" onClick={state.loadPages}>
               <AiOutlineReload />
               Refresh
             </button>
@@ -91,7 +84,7 @@ function PageManagerHomePage(props: Props) {
         <PageList pages={state.pages} isLoading={state.loadingPages} products={state.products} />
       </div>
     </div>
-  ));
+  ))
 }
 
-export default PageManagerHomePage;
+export default PageManagerHomePage

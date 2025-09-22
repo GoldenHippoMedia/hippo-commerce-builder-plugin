@@ -1,60 +1,56 @@
-import { IBrandSettings, IProduct } from "./types";
-import { HippoUser } from "@services/user-management";
+import { IBrandSettings, IProduct } from './types'
+import { HippoUser } from '@services/user-management'
 
 class CommerceApi {
-  private readonly brandName: string;
-  private readonly headers: Headers;
-  private readonly apiUrl: string;
+  private readonly brandName: string
+  private readonly headers: Headers
+  private readonly apiUrl: string
 
   constructor(user: HippoUser) {
-    this.brandName = user.brand;
-    this.apiUrl = user.hippoApi.url;
-    this.headers = this.buildHeaders(user.hippoApi.user, user.hippoApi.password);
+    this.brandName = user.brand
+    this.apiUrl = user.hippoApi.url
+    this.headers = this.buildHeaders(user.hippoApi.user, user.hippoApi.password)
   }
 
   async getBrandSettings(): Promise<IBrandSettings> {
     const url = this.buildRequestUrl('config')
-    console.info(`Getting brands for ${url}`);
+    console.info(`Getting brands for ${url}`)
     const setting = await fetch(url, {
       headers: this.headers,
-      credentials: "include",
-    });
+      credentials: 'include',
+    })
     if (setting.ok) {
-      return setting.json();
+      return setting.json()
     }
-    throw new Error(
-      `Failed to retrieve settings for ${this.brandName}. Check your plugin settings!`,
-    );
+    throw new Error(`Failed to retrieve settings for ${this.brandName}. Check your plugin settings!`)
   }
 
   async getProductFeed(): Promise<IProduct[]> {
     const url = this.buildRequestUrl('product/feed')
-    console.info(`Getting products for ${url}`);
+    console.info(`Getting products for ${url}`)
     const products = await fetch(url, {
       headers: this.headers,
-      credentials: "include",
+      credentials: 'include',
     })
     if (products.ok) {
-      return products.json();
+      return products.json()
     }
-    throw new Error(
-      `Failed to retrieve products for ${this.brandName}. Check your plugin settings!`,
-    )
+    throw new Error(`Failed to retrieve products for ${this.brandName}. Check your plugin settings!`)
   }
 
   private buildHeaders(user: string, password: string): Headers {
-    const credentials = btoa(`${user}:${password}`);
+    const credentials = btoa(`${user}:${password}`)
     return new Headers({
-      "X-Brand": this.brandName,
+      'X-Brand': this.brandName,
       Authorization: `Basic ${credentials}`,
-      Accept: "application/json; charset=utf-8",
-      "Content-Type": "application/json",
-    });
+      Accept: 'application/json; charset=utf-8',
+      'Content-Type': 'application/json',
+    })
   }
 
   private buildRequestUrl = (path: string) => {
-    return `${this.apiUrl}/${path}`;
-  };
+    return `${this.apiUrl}/${path}`
+  }
 }
 
-export default CommerceApi;
+export default CommerceApi

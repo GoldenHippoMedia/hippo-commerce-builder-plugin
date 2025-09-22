@@ -1,4 +1,4 @@
-import { BuilderContentProduct } from "@components/products-dashboard.component";
+import { BuilderContentProduct } from '@components/products-dashboard.component'
 import {
   HiOutlineBeaker,
   HiOutlineClipboardDocumentList,
@@ -9,50 +9,37 @@ import {
   HiOutlineStar,
   HiOutlineTag,
   HiOutlineXMark,
-} from "react-icons/hi2";
-import React, { useState } from "react";
-import { IProduct } from "@services/commerce-api/types";
-import ProductPricingTable from "@components/product-pricing-table.component";
-
+} from 'react-icons/hi2'
+import React, { useState } from 'react'
+import { IProduct } from '@services/commerce-api/types'
+import ProductPricingTable from '@components/product-pricing-table.component'
 
 interface ProductDetailsModalProps {
-  product: BuilderContentProduct,
-  commerceProduct?: IProduct,
-  onClose: () => void,
-  images: { src: string, alt: string, type: 'featured' | 'secondary'}[],
+  product: BuilderContentProduct
+  commerceProduct?: IProduct
+  onClose: () => void
+  images: { src: string; alt: string; type: 'featured' | 'secondary' }[]
 }
 
 function ProductDetailsModal({ product, commerceProduct, onClose, images }: ProductDetailsModalProps) {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const getRatingStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 >= 0.5;
+    const stars = []
+    const fullStars = Math.floor(rating)
+    const hasHalfStar = rating % 1 >= 0.5
 
     for (let i = 0; i < 5; i++) {
       if (i < fullStars) {
-        stars.push(
-          <HiOutlineStar
-            key={i}
-            className="h-4 w-4 text-yellow-500 fill-current"
-          />,
-        );
+        stars.push(<HiOutlineStar key={i} className="h-4 w-4 text-yellow-500 fill-current" />)
       } else if (i === fullStars && hasHalfStar) {
-        stars.push(
-          <HiOutlineStar
-            key={i}
-            className="h-4 w-4 text-yellow-500 fill-current opacity-50"
-          />,
-        );
+        stars.push(<HiOutlineStar key={i} className="h-4 w-4 text-yellow-500 fill-current opacity-50" />)
       } else {
-        stars.push(
-          <HiOutlineStar key={i} className="h-4 w-4 text-base-content/20" />,
-        );
+        stars.push(<HiOutlineStar key={i} className="h-4 w-4 text-base-content/20" />)
       }
     }
 
-    return <div className="flex items-center gap-1">{stars}</div>;
-  };
+    return <div className="flex items-center gap-1">{stars}</div>
+  }
 
   return (
     <div className="modal modal-open">
@@ -62,10 +49,7 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
             <HiOutlineInformationCircle className="h-5 w-5" />
             Product Details
           </h3>
-          <button
-            onClick={onClose}
-            className="btn btn-ghost btn-sm"
-          >
+          <button onClick={onClose} className="btn btn-ghost btn-sm">
             <HiOutlineXMark className="h-5 w-5" />
           </button>
         </div>
@@ -75,7 +59,7 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
           <div className="flex flex-col md:flex-row gap-4">
             {/* Image Carousel */}
             {(() => {
-              if (images.length === 0) return null;
+              if (images.length === 0) return null
 
               return (
                 <div className="flex-shrink-0">
@@ -90,9 +74,7 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
                           loading="lazy"
                         />
                       ) : (
-                        <div className="text-base-content/40 text-sm">
-                          No Image
-                        </div>
+                        <div className="text-base-content/40 text-sm">No Image</div>
                       )}
                     </div>
 
@@ -101,35 +83,23 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
                       <>
                         <div
                           onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setCurrentImageIndex(
-                              currentImageIndex === 0
-                                ? images.length - 1
-                                : currentImageIndex - 1,
-                            );
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setCurrentImageIndex(currentImageIndex === 0 ? images.length - 1 : currentImageIndex - 1)
                           }}
                           className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center cursor-pointer z-10 select-none"
                         >
-                              <span className="text-white text-sm leading-none">
-                                ❮
-                              </span>
+                          <span className="text-white text-sm leading-none">❮</span>
                         </div>
                         <div
                           onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setCurrentImageIndex(
-                              currentImageIndex === images.length - 1
-                                ? 0
-                                : currentImageIndex + 1,
-                            );
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setCurrentImageIndex(currentImageIndex === images.length - 1 ? 0 : currentImageIndex + 1)
                           }}
                           className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 hover:bg-black/70 rounded-full flex items-center justify-center cursor-pointer z-10 select-none"
                         >
-                              <span className="text-white text-sm leading-none">
-                                ❯
-                              </span>
+                          <span className="text-white text-sm leading-none">❯</span>
                         </div>
                       </>
                     )}
@@ -137,14 +107,12 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
                     {/* Image Type Indicator */}
                     <div className="absolute bottom-2 left-2">
                       <div className="badge badge-sm bg-black/50 text-white border-none">
-                        {images[currentImageIndex]?.type === "featured"
-                          ? "Featured"
-                          : "Secondary"}
+                        {images[currentImageIndex]?.type === 'featured' ? 'Featured' : 'Secondary'}
                       </div>
                     </div>
                   </div>
                 </div>
-              );
+              )
             })()}
 
             <div className="flex-grow">
@@ -168,100 +136,81 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
                 />
               )}
               {product.data.shortDescription && (
-                <p className="text-sm text-base-content/80">
-                  {product.data.shortDescription}
-                </p>
+                <p className="text-sm text-base-content/80">{product.data.shortDescription}</p>
               )}
             </div>
           </div>
 
           {/* Tags */}
-          {product.data.tags &&
-            Array.isArray(product.data.tags) &&
-            product.data.tags.length > 0 && (
-              <div>
-                <h5 className="font-semibold mb-2 flex items-center gap-1">
-                  <HiOutlineTag className="h-4 w-4" />
-                  Tags
-                </h5>
-                <div className="flex flex-wrap gap-2">
-                  {product.data.tags.map((tag, index) => {
-                    if (!tag?.tag?.value?.data?.name) return null;
-                    return (
-                      <div
-                        key={index}
-                        className="badge badge-outline"
-                        style={{
-                          backgroundColor:
-                            tag.tag.value.data.tagColor || undefined,
-                        }}
-                      >
-                        {tag.tag.value.data.name}
-                      </div>
-                    );
-                  })}
-                </div>
+          {product.data.tags && Array.isArray(product.data.tags) && product.data.tags.length > 0 && (
+            <div>
+              <h5 className="font-semibold mb-2 flex items-center gap-1">
+                <HiOutlineTag className="h-4 w-4" />
+                Tags
+              </h5>
+              <div className="flex flex-wrap gap-2">
+                {product.data.tags.map((tag, index) => {
+                  if (!tag?.tag?.value?.data?.name) return null
+                  return (
+                    <div
+                      key={index}
+                      className="badge badge-outline"
+                      style={{
+                        backgroundColor: tag.tag.value.data.tagColor || undefined,
+                      }}
+                    >
+                      {tag.tag.value.data.name}
+                    </div>
+                  )
+                })}
               </div>
-            )}
+            </div>
+          )}
 
           {/* Categories */}
-          {product.data.categories &&
-            Array.isArray(product.data.categories) &&
-            product.data.categories.length > 0 && (
-              <div>
-                <h5 className="font-semibold mb-2 flex items-center gap-1">
-                  <HiOutlineListBullet className="h-4 w-4" />
-                  Categories
-                </h5>
-                <div className="flex flex-wrap gap-2">
-                  {product.data.categories.map((cat, index) => {
-                    if (!cat?.category?.value?.data?.name) return null;
-                    return (
-                      <div
-                        key={index}
-                        className="badge badge-primary badge-outline"
-                      >
-                        {cat.category.value.data.name}
-                      </div>
-                    );
-                  })}
-                </div>
+          {product.data.categories && Array.isArray(product.data.categories) && product.data.categories.length > 0 && (
+            <div>
+              <h5 className="font-semibold mb-2 flex items-center gap-1">
+                <HiOutlineListBullet className="h-4 w-4" />
+                Categories
+              </h5>
+              <div className="flex flex-wrap gap-2">
+                {product.data.categories.map((cat, index) => {
+                  if (!cat?.category?.value?.data?.name) return null
+                  return (
+                    <div key={index} className="badge badge-primary badge-outline">
+                      {cat.category.value.data.name}
+                    </div>
+                  )
+                })}
               </div>
-            )}
+            </div>
+          )}
 
           {/* Use Cases */}
-          {product.data.useCases &&
-            Array.isArray(product.data.useCases) &&
-            product.data.useCases.length > 0 && (
-              <div>
-                <h5 className="font-semibold mb-2 flex items-center gap-1">
-                  <HiOutlineClipboardDocumentList className="h-4 w-4" />
-                  Use Cases
-                </h5>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {product.data.useCases.map(
-                    (useCase, index) => {
-                      if (!useCase?.useCase?.value?.data?.name) return null;
-                      return (
-                        <div
-                          key={index}
-                          className="p-3 bg-base-200 rounded-lg"
-                        >
-                          <div className="font-medium">
-                            {useCase.useCase.value.data.name}
-                          </div>
-                          {useCase.useCase.value.data.description && (
-                            <div className="text-sm text-base-content/70 mt-1">
-                              {useCase.useCase.value.data.description}
-                            </div>
-                          )}
+          {product.data.useCases && Array.isArray(product.data.useCases) && product.data.useCases.length > 0 && (
+            <div>
+              <h5 className="font-semibold mb-2 flex items-center gap-1">
+                <HiOutlineClipboardDocumentList className="h-4 w-4" />
+                Use Cases
+              </h5>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                {product.data.useCases.map((useCase, index) => {
+                  if (!useCase?.useCase?.value?.data?.name) return null
+                  return (
+                    <div key={index} className="p-3 bg-base-200 rounded-lg">
+                      <div className="font-medium">{useCase.useCase.value.data.name}</div>
+                      {useCase.useCase.value.data.description && (
+                        <div className="text-sm text-base-content/70 mt-1">
+                          {useCase.useCase.value.data.description}
                         </div>
-                      );
-                    },
-                  )}
-                </div>
+                      )}
+                    </div>
+                  )
+                })}
               </div>
-            )}
+            </div>
+          )}
 
           {/* Ingredients */}
           {product.data.ingredients &&
@@ -273,21 +222,16 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
                   Key Ingredients
                 </h5>
                 <div className="flex flex-wrap gap-2">
-                  {product.data.ingredients.map(
-                    (ingredient, index) => {
-                      if (!ingredient?.ingredient?.value?.data?.name) {
-                        return null;
-                      }
-                      return (
-                        <div
-                          key={index}
-                          className="badge badge-secondary badge-outline"
-                        >
-                          {ingredient.ingredient.value.data.name}
-                        </div>
-                      );
-                    },
-                  )}
+                  {product.data.ingredients.map((ingredient, index) => {
+                    if (!ingredient?.ingredient?.value?.data?.name) {
+                      return null
+                    }
+                    return (
+                      <div key={index} className="badge badge-secondary badge-outline">
+                        {ingredient.ingredient.value.data.name}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -312,14 +256,12 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
               <div className="space-y-1 text-sm">
                 {product.data.upc && (
                   <div>
-                    <span className="font-medium">UPC:</span>{" "}
-                    {product.data.upc}
+                    <span className="font-medium">UPC:</span> {product.data.upc}
                   </div>
                 )}
                 {product.data.packagingLabels && (
                   <div>
-                    <span className="font-medium">Packaging:</span>{" "}
-                    {product.data.packagingLabels.singular} /{" "}
+                    <span className="font-medium">Packaging:</span> {product.data.packagingLabels.singular} /{' '}
                     {product.data.packagingLabels.plural}
                   </div>
                 )}
@@ -329,25 +271,16 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
             {/* Reviews */}
             <div>
               <h5 className="font-semibold mb-2">Customer Reviews</h5>
-              {product.data.reviews &&
-              product.data.reviews.count > 0 ? (
+              {product.data.reviews && product.data.reviews.count > 0 ? (
                 <div className="space-y-2">
-                  {getRatingStars(
-                    product.data.reviews.averageRating,
-                  )}
+                  {getRatingStars(product.data.reviews.averageRating)}
                   <div className="text-sm text-base-content/80">
-                    {product.data.reviews.averageRating.toFixed(
-                      1,
-                    )}{" "}
-                    out of 5 (
-                    {product.data.reviews.count.toLocaleString()}{" "}
-                    reviews)
+                    {product.data.reviews.averageRating.toFixed(1)} out of 5 (
+                    {product.data.reviews.count.toLocaleString()} reviews)
                   </div>
                 </div>
               ) : (
-                <div className="text-sm text-base-content/50">
-                  No reviews available
-                </div>
+                <div className="text-sm text-base-content/50">No reviews available</div>
               )}
             </div>
           </div>
@@ -361,12 +294,10 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
               </h5>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="font-medium">Slug:</span>{" "}
-                  {product.data.gh.slug}
+                  <span className="font-medium">Slug:</span> {product.data.gh.slug}
                 </div>
                 <div>
-                  <span className="font-medium">Hippo ID:</span>{" "}
-                  {product.data.gh.productionId}
+                  <span className="font-medium">Hippo ID:</span> {product.data.gh.productionId}
                 </div>
               </div>
             </div>
@@ -384,7 +315,7 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
           <div className="flex flex-wrap gap-2 flex-1">
             <a
               href={`/content/${product.id}`}
-              target={"_blank"}
+              target={'_blank'}
               rel="noopener noreferrer"
               className="btn btn-info btn-sm gap-1"
             >
@@ -392,10 +323,7 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
               Edit Product
             </a>
           </div>
-          <button
-            onClick={onClose}
-            className="btn"
-          >
+          <button onClick={onClose} className="btn">
             Close
           </button>
         </div>
@@ -404,4 +332,4 @@ function ProductDetailsModal({ product, commerceProduct, onClose, images }: Prod
   )
 }
 
-export default ProductDetailsModal;
+export default ProductDetailsModal
