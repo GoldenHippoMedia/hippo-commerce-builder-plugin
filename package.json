@@ -1,6 +1,6 @@
 {
   "name": "@goldenhippo/hippo-commerce-builder-plugin",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Custom Builder.io application for management of Golden Hippo commerce brands",
   "author": "steven.hall@goldenhippo.com",
   "license": "UNLICENSED",
