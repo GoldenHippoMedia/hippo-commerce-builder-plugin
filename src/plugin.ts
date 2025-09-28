@@ -199,6 +199,14 @@ Builder.register('plugin', {
       required: false,
       advanced: true,
     },
+    {
+      type: 'boolean',
+      name: 'devMode',
+      friendlyName: 'Development Mode',
+      helperText: 'Enabling development mode uses placeholder data for all content',
+      required: false,
+      advanced: true,
+    },
   ],
   // Modify the save button text
   ctaText: 'Save Changes',

@@ -1122,6 +1122,15 @@ class BuilderIOCMSHelper {
         },
         {
           '@type': '@builder.io/core:Field',
+          name: 'productGridHideRestricted',
+          friendlyName: 'Hide Restricted Products',
+          helperText: `Hide restricted products from your product grid based on the user's selected country`,
+          type: 'boolean',
+          localized: false,
+          defaultCollapsed: true,
+        },
+        {
+          '@type': '@builder.io/core:Field',
           name: 'productLinkPrefix',
           friendlyName: 'Product Link Prefix',
           helperText:
@@ -2549,11 +2558,13 @@ class BuilderIOCMSHelper {
           localized: false,
           defaultCollapsed: true,
           enum: [
+            'cartPageAboveSummaryContent',
             'cartPageBelowSummaryContent',
             'cartPageEmptyCartContent',
             'cartPageTopSectionContent',
             'gdprContent',
             'mainFooter',
+            'offerSelectorAboveCTAContent',
             'offerSelectorBelowCTAContent',
             'subscriptionManagementNoSubsContent',
           ],
@@ -2636,6 +2647,17 @@ class BuilderIOCMSHelper {
           friendlyName: 'Product Headline',
           helperText: 'Subheading (tagline) for the product, displayed on the product card',
           type: 'text',
+          localized: true,
+        },
+        {
+          '@type': '@builder.io/core:Field',
+          name: 'gridDescription',
+          defaultCollapsed: true,
+
+          friendlyName: 'Grid Description',
+          helperText: 'A small description, used on some product grids as an additional sub-heading or tagline.',
+          type: 'text',
+          required: false,
           localized: true,
         },
         {
@@ -2972,9 +2994,8 @@ class BuilderIOCMSHelper {
           name: 'products',
           friendlyName: 'Products',
           type: 'list',
-          localized: false,
           required: true,
-          defaultCollapsed: true,
+          defaultCollapsed: false,
           defaultValue: {
             '@type': '@builder.io/core:LocalizedValue',
           },
@@ -3210,6 +3231,16 @@ class BuilderIOCMSHelper {
         defaultCollapsed: true,
         helperText:
           'If this category has a specific web page, provide the path here without a leading slash (e.g. "shop/supplements") for use in breadcrumb navigation. By default, the path "shop" will be used.',
+        required: false,
+        localized: false,
+      },
+      {
+        '@type': '@builder.io/core:Field',
+        name: 'searchId',
+        friendlyName: 'Search Keys',
+        type: 'tags',
+        defaultCollapsed: true,
+        helperText: 'Used when building links (e.g. "products?category=[Search Key]")',
         required: false,
         localized: false,
       },
@@ -3523,16 +3554,68 @@ export type BuilderIOFieldTypes =
 
 export interface BaseBuilderIOField {
   '@type'?: '@builder.io/core:Field'
+  /**
+   * This is the key of the field in the data object.
+   * Use camelCase when possible.
+   */
   name: string
+  /**
+   * Provide a name to present in the UI.
+   */
   friendlyName: string
+  /**
+   * Indicate if this field is required.
+   *
+   * If you add a required field to existing data, it will not break access to the existing data.
+   * However, the field must be set before any further changes can be saved. This means *all retrieved
+   * data should be treated as optional.*
+   */
   required?: boolean
+  /**
+   * When `true` users can provide alternate translations of the content.
+   * This is available for most field types (excl. `object`)
+   */
   localized?: boolean
+  /**
+   * Provides the field descriptor text displayed under the field.
+   *
+   * This text should be short and helpful when provided. While beneficial, avoid providing help text on the most
+   * obvious fields as it may clutter the screen. For example, you may not need to provide help text for a boolean
+   * field called "Show Banner".
+   */
   helperText?: string | undefined
+  /**
+   * Hides the field entry by collapsing. The friendly name will be the accordian toggle.
+   * Typically, we set this to true unless the model has few fields. You typically want to collapse
+   * `object` models as those are treated as sections on the entry forms.
+   */
   defaultCollapsed: boolean
   makeEntryTitle?: boolean
+  /**
+   * Conditionally hide this field based on a boolean returned by a function.
+   * From our current testing, this function can reference the current `object`,
+   * but not the entire current entry.
+   *
+   * Ref: Our page model has multiple fields with `showIf` methods.
+   */
   showIf?: string
+  /**
+   * This allows you to create fields that are "api only".
+   * These can be handy when syncing external IDs or other "readonly" data.
+   */
   hidden?: boolean
-  type: 'text' | 'longText' | 'html' | 'boolean' | 'color' | 'url' | 'timestamp' | 'uiBlocks' | 'map'
+  /**
+   * The type of field.
+   */
+  type: 'text' | 'longText' | 'html' | 'boolean' | 'color' | 'url' | 'timestamp' | 'uiBlocks' | 'map' | 'tags'
+  /**
+   * A default value for this field when creating a new entry.
+   *
+   * *NOTE*
+   *
+   * This value is not set on _any current entries_. Unfortunately, this means that you cannot use this to set a
+   * default value on a new required field.
+   */
   defaultValue?:
     | string
     | {
@@ -3563,10 +3646,18 @@ export interface ListField extends Omit<BaseBuilderIOField, 'type'> {
   copyOnAdd?: boolean
 }
 
-export interface ObjectField extends Omit<BaseBuilderIOField, 'type' | 'defaultValue'> {
+export interface ObjectField extends Omit<BaseBuilderIOField, 'type' | 'defaultValue' | 'localized'> {
   type: 'object'
   subFields: BuilderIOFieldTypes[]
   defaultValue?: unknown
+  /**
+   * ### Important!
+   * Builder.io will "break" your model if you attempt to localize an 'object'.
+   *
+   * It's best just to leave this undefined, but instead of excluding it from the type, we've declared it
+   * to provide this context.
+   */
+  localized?: false
 }
 
 export interface NumberField extends Omit<BaseBuilderIOField, 'type' | 'defaultValue'> {
@@ -3583,6 +3674,11 @@ export interface SelectField extends Omit<BaseBuilderIOField, 'type' | 'defaultV
         Default?: string | number | boolean
       }
   enum: string[]
+}
+
+export interface TagsField extends Omit<BaseBuilderIOField, 'type' | 'defaultValue'> {
+  type: 'tags',
+  defaultValue?: string[]
 }
 
 export interface UIBlockField extends Omit<BaseBuilderIOField, 'type' | 'defaultCollapsed' | 'friendlyName'> {

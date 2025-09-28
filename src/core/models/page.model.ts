@@ -162,49 +162,19 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
             defaultCollapsed: false,
           },
           {
+            '@type': '@builder.io/core:Field',
+            name: 'hideNativeOfferSelector',
+            friendlyName: 'Hide Native Offer Selector',
+            helperText: 'Set to true to fully hide the native Offer Selector to provide your own (e.g. via VWO)',
+            type: 'boolean',
+            localized: false,
+            defaultCollapsed: true,
+            advanced: true,
+          },
+          {
             name: 'offerSelector',
             friendlyName: 'Offer Selector',
             type: 'object',
-            defaultValue: {
-              labels: {
-                scrollButton: {
-                  Default: '<span class="material-icons">keyboard_arrow_up</span> Back to top',
-                },
-                subscriptionOffer: {
-                  Default: 'Or $PRICE when you subscribe & save',
-                },
-                memberOffer: {
-                  Default: 'Or pay member price of',
-                },
-                outOfStockFormSuccess: {
-                  Default: '<p class="text-center">We will notify you as soon as this item is back in stock.</p>',
-                },
-                outOfStock: {
-                  Default: "Sorry, we're currently out of stock",
-                },
-                subscriptionToggle: {
-                  Default: 'Subscribe & save',
-                },
-                otpToggle: {
-                  Default: 'Single purchase',
-                },
-                actionButton: {
-                  Default: 'ADD TO CART',
-                },
-                flavorSelector: {
-                  Default: 'Choose a flavor',
-                },
-              },
-              osType: 'Vertical - Flavor Dropdown - Type Toggle',
-              cssOverrides: {},
-              features: {
-                savingsType: {},
-                showSubscriptionPriceMessage: {},
-                showSavings: {},
-                showMemberPriceMessage: {},
-                alwaysShowSubscriptions: {},
-              },
-            },
             required: false,
             subFields: [
               {
@@ -236,6 +206,16 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
                     helperText:
                       'When both purchase options are available to the customer, this is the option that will be selected by default.',
                     enum: [OfferSelectorDefaultPurchaseType.ONE_TIME, OfferSelectorDefaultPurchaseType.SUBSCRIPTION],
+                    defaultCollapsed: false,
+                  },
+                  {
+                    name: 'preferredQuantity',
+                    friendlyName: 'Initial Offer Quantity',
+                    type: 'number',
+                    defaultValue: 3,
+                    required: false,
+                    helperText: `Enter the quantity you would prefer users see first. If that quantity is not available,
+                    we will locate the closest quantity available (defaults to 3 if not set).`,
                     defaultCollapsed: false,
                   },
                   {
@@ -292,7 +272,7 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
                     defaultCollapsed: false,
                   },
                   {
-                    name: 'alwaysShowSubscriptions',
+                    name: 'enableAnonymousSubscriptions',
                     friendlyName: 'Always Show Subscriptions',
                     type: 'boolean',
                     defaultValue: {},
@@ -300,7 +280,8 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
                     helperText:
                       'Enable this to present subscriptions (when available) to non-MyAccount visitors. By default, a user must be logged in to access this option.',
                     defaultCollapsed: false,
-                    hidden: true,
+                    hidden: false,
+                    advanced: true,
                   },
                 ],
                 helperText: '',
@@ -497,6 +478,7 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
             ],
             helperText: 'Configure the offer selector to display.',
             defaultCollapsed: true,
+            showIf: "return !(options.get('hideNativeOfferSelector'))",
           },
           {
             name: 'category',

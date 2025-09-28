@@ -14,7 +14,6 @@ class CommerceApi {
 
   async getBrandSettings(): Promise<IBrandSettings> {
     const url = this.buildRequestUrl('config')
-    console.info(`Getting brands for ${url}`)
     const setting = await fetch(url, {
       headers: this.headers,
       credentials: 'include',
@@ -22,7 +21,13 @@ class CommerceApi {
     if (setting.ok) {
       return setting.json()
     }
-    throw new Error(`Failed to retrieve settings for ${this.brandName}. Check your plugin settings!`)
+    const res = await setting.text()
+    console.error('[Hippo Commerce] Setting Error', {
+      res: res,
+      status: setting.status,
+      statusText: setting.statusText,
+    })
+    throw new Error(`Failed to retrieve brand settings for ${this.brandName}. Check your plugin settings!`)
   }
 
   async getProductFeed(): Promise<IProduct[]> {

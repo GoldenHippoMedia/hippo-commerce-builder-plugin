@@ -163,7 +163,6 @@ function AppCore(props: AppCoreProps): React.ReactElement {
     async loadProducts() {
       state.loadingProducts = true
       const products = await commerceApi.getProductFeed()
-      console.info('[Hippo Commerce] products', products)
       state.products = products
       state.loadingProducts = false
     },
@@ -183,7 +182,6 @@ function AppCore(props: AppCoreProps): React.ReactElement {
       ])
       state.pages = Array.isArray(pages) ? pages : []
       state.loadingPages = false
-      console.info('[Hippo Commerce] products', builderProducts)
       state.builderProducts = Array.isArray(builderProducts) ? (builderProducts as BuilderContentProduct[]) : []
       state.loadingBuilderProducts = false
       state.blogComments = Array.isArray(blogComments) ? blogComments : []
