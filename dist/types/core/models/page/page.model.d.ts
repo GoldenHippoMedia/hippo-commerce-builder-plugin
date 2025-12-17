@@ -1,4 +1,4 @@
-import { ModelShape } from '../HippoModels';
+import { ModelShape } from '@core/models/types';
 export interface PageModelFactoryProps {
     productModelId: string;
     productGroupModelId: string;

@@ -1,4 +1,4 @@
-import { ModelShape } from '../HippoModels'
+import { ModelShape } from '@core/models/types'
 
 export interface PageModelFactoryProps {
   productModelId: string
@@ -673,7 +673,15 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
         ],
       },
       {
-        '@type': '@builder.io/core:Field',
+        name: 'disableStickyHeader',
+        friendlyName: 'Disable Sticky Header',
+        helperText: 'Disable the sticky header for this page only.',
+        type: 'boolean',
+        localized: false,
+        defaultCollapsed: true,
+        advanced: true,
+      },
+      {
         name: 'showBundleDrawer',
         friendlyName: 'Show Bundle Drawer',
         helperText: 'Enable the bundle drawer for this page.',
@@ -681,6 +689,56 @@ export const pageModelFactory = (props: PageModelFactoryProps): ModelShape => {
         localized: false,
         defaultCollapsed: true,
         advanced: true,
+      },
+      {
+        name: 'robotsMeta',
+        friendlyName: 'Robots Meta',
+        type: 'object',
+        required: false,
+        helperText: 'Settings for the robots meta tag.',
+        subFields: [
+          {
+            name: 'noIndex',
+            friendlyName: 'No Index',
+            type: 'boolean',
+            required: false,
+            defaultCollapsed: true,
+            helperText: 'Prevents pages from being indexed and displayed in search engine result pages',
+          },
+          {
+            name: 'noFollow',
+            friendlyName: 'No Follow',
+            type: 'boolean',
+            required: false,
+            defaultCollapsed: true,
+            helperText: 'Prevents search engines from following links on the pages',
+          },
+          {
+            name: 'noArchive',
+            friendlyName: 'No Archive',
+            type: 'boolean',
+            required: false,
+            defaultCollapsed: true,
+            helperText: 'Prevents search engines from showing Cached links for pages',
+          },
+          {
+            name: 'noImageIndex',
+            friendlyName: 'No Image Index',
+            type: 'boolean',
+            required: false,
+            defaultCollapsed: true,
+            helperText: 'This option prevents images on a page from being indexed by Google and other search engines',
+          },
+          {
+            name: 'noSnippet',
+            friendlyName: 'No Snippet',
+            type: 'boolean',
+            required: false,
+            defaultCollapsed: true,
+            helperText: 'Prevents a snippet from being shown in the search results',
+          },
+        ],
+        defaultCollapsed: true,
       },
     ],
     editingUrlLogic: 'return `' + editUrl + '${targeting.urlPath}?builder.preview=true&builder.frameEditing=true`',

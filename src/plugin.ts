@@ -1,8 +1,9 @@
 import { Builder } from '@builder.io/sdk'
 import appState, { ApplicationContext, Model } from '@builder.io/app-context'
 import { pluginId } from './constants'
-import HippoModels, { ModelShape } from './core/HippoModels'
 import HippoCMSManager from '@application/HippoCMSManager'
+import BuilderIOCMSHelper from '@core/models/builder-helper'
+import { ModelShape } from '@core/models/types'
 
 interface OnSaveActions {
   updateSettings(partial: Record<string, any>): Promise<void>
@@ -22,18 +23,18 @@ function getModel(name: string, models: Model[]) {
 async function setHippoModels(currentState: ApplicationContext) {
   const editUrl = getEditUrl(currentState)
   const models = currentState.models.result
-  const ingredientModel = getModel(HippoModels.ingredientsModel.name, models)
-  const categoryModel = getModel(HippoModels.categoryModel.name, models)
-  const tagModel = getModel(HippoModels.productTagModel.name, models)
-  const useCaseModel = getModel(HippoModels.useCaseModel.name, models)
-  const ingredientModelId = await setModel(HippoModels.ingredientsModel, ingredientModel, currentState)
-  const categoryModelId = await setModel(HippoModels.categoryModel, categoryModel, currentState)
-  const tagModelId = await setModel(HippoModels.productTagModel, tagModel, currentState)
-  const useCaseModelId = await setModel(HippoModels.useCaseModel, useCaseModel, currentState)
+  const ingredientModel = getModel(BuilderIOCMSHelper.ingredientsModel.name, models)
+  const categoryModel = getModel(BuilderIOCMSHelper.categoryModel.name, models)
+  const tagModel = getModel(BuilderIOCMSHelper.productTagModel.name, models)
+  const useCaseModel = getModel(BuilderIOCMSHelper.useCaseModel.name, models)
+  const ingredientModelId = await setModel(BuilderIOCMSHelper.ingredientsModel, ingredientModel, currentState)
+  const categoryModelId = await setModel(BuilderIOCMSHelper.categoryModel, categoryModel, currentState)
+  const tagModelId = await setModel(BuilderIOCMSHelper.productTagModel, tagModel, currentState)
+  const useCaseModelId = await setModel(BuilderIOCMSHelper.useCaseModel, useCaseModel, currentState)
   if (!ingredientModelId || !categoryModelId || !useCaseModelId || !tagModelId) {
     return
   }
-  const productModelShape = HippoModels.productModel({
+  const productModelShape = BuilderIOCMSHelper.productModel({
     ingredientsModelId: ingredientModelId,
     categoryModelId: categoryModelId,
     useCaseModelId: useCaseModelId,
@@ -42,15 +43,15 @@ async function setHippoModels(currentState: ApplicationContext) {
   const productModel = getModel(productModelShape.name, models)
   const productModelId = await setModel(productModelShape, productModel, currentState)
   if (!productModelId) return
-  const productGroupModelShape = HippoModels.productGroupModel(productModelId)
+  const productGroupModelShape = BuilderIOCMSHelper.productGroupModel(productModelId)
   const productGroupModel = getModel(productGroupModelShape.name, models)
   const productGroupModelId = await setModel(productGroupModelShape, productGroupModel, currentState)
-  const bannerModel = getModel(HippoModels.siteBanner(editUrl).name, models)
-  const bannerModelId = await setModel(HippoModels.siteBanner(editUrl), bannerModel, currentState)
-  const blogCategoryModel = getModel(HippoModels.blogCategoryModel.name, models)
-  const blogCategoryModelId = await setModel(HippoModels.blogCategoryModel, blogCategoryModel, currentState)
+  const bannerModel = getModel(BuilderIOCMSHelper.siteBanner(editUrl).name, models)
+  const bannerModelId = await setModel(BuilderIOCMSHelper.siteBanner(editUrl), bannerModel, currentState)
+  const blogCategoryModel = getModel(BuilderIOCMSHelper.blogCategoryModel.name, models)
+  const blogCategoryModelId = await setModel(BuilderIOCMSHelper.blogCategoryModel, blogCategoryModel, currentState)
   if (!productGroupModelId || !bannerModelId || !blogCategoryModelId) return
-  const pageModelShape = HippoModels.pageModel({
+  const pageModelShape = BuilderIOCMSHelper.pageModel({
     productModelId,
     productGroupModelId,
     categoryModelId,
@@ -62,13 +63,13 @@ async function setHippoModels(currentState: ApplicationContext) {
   const pageModel = getModel(pageModelShape.name, models)
   const pageModelId = await setModel(pageModelShape, pageModel, currentState)
   if (!pageModelId) return
-  const blogCommentModelShape = HippoModels.blogCommentModel(pageModelId)
+  const blogCommentModelShape = BuilderIOCMSHelper.blogCommentModel(pageModelId)
   const blogCommentModel = getModel(blogCommentModelShape.name, models)
   if (blogCommentModel) {
     console.info(JSON.parse(JSON.stringify(blogCommentModel)))
   }
   const blogCommentModelId = await setModel(blogCommentModelShape, blogCommentModel, currentState)
-  const productGridConfigModelShape = HippoModels.productGridConfigModel({
+  const productGridConfigModelShape = BuilderIOCMSHelper.productGridConfigModel({
     categoryId: categoryModelId,
     useCaseId: useCaseModelId,
     ingredientId: ingredientModelId,
@@ -77,10 +78,10 @@ async function setHippoModels(currentState: ApplicationContext) {
   const productGridConfigModel = getModel(productGridConfigModelShape.name, models)
   const productGridConfigModelId = await setModel(productGridConfigModelShape, productGridConfigModel, currentState)
   if (!productGridConfigModelId) return
-  const brandConfigModelShape = HippoModels.brandConfig(productGridConfigModelId, bannerModelId)
+  const brandConfigModelShape = BuilderIOCMSHelper.brandConfig(productGridConfigModelId, bannerModelId)
   const brandConfigModel = getModel(brandConfigModelShape.name, models)
   const brandConfigModelId = await setModel(brandConfigModelShape, brandConfigModel, currentState)
-  const defaultWebsiteSectionModelShape = HippoModels.defaultWebsiteSection(editUrl)
+  const defaultWebsiteSectionModelShape = BuilderIOCMSHelper.defaultWebsiteSection(editUrl)
   const defaultWebsiteSectionModel = getModel(defaultWebsiteSectionModelShape.name, models)
   const defaultWebsiteSectionModelId = await setModel(
     defaultWebsiteSectionModelShape,
@@ -157,7 +158,7 @@ Builder.register('plugin', {
   settings: [
     {
       type: 'select',
-      enum: ['Gundry MD', 'Dr. Marty', 'Other'],
+      enum: ['Gundry MD', 'Dr. Marty', 'Driven Entrepreneur', 'Other'],
       name: 'brand',
       friendlyName: 'Brand',
       helperText: "Select your brand. If you select 'Other', provide your brand under the advanced settings.",

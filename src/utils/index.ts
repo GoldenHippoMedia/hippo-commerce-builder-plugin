@@ -15,7 +15,7 @@ import {
   ValidationIssue,
   ValidationWarning,
 } from './utils.interfaces'
-import { PageTypes, PdpTypes } from '@core/models/page.model'
+import { PageTypes, PdpTypes } from '@core/models/page/page.model'
 import { IProduct } from '@services/commerce-api/types'
 
 class Utils {

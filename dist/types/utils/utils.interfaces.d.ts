@@ -1,4 +1,4 @@
-import { PageTypes, PdpTypes } from '@core/models/page.model';
+import { PageTypes, PdpTypes } from '@core/models/page/page.model';
 import { BuilderContent } from '@builder.io/sdk';
 export interface BuilderReference {
     id: string;

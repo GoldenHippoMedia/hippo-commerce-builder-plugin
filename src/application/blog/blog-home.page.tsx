@@ -14,7 +14,7 @@ import {
 } from 'react-icons/hi2'
 import { BlogDetails } from '@utils/utils.interfaces'
 import { AppTabState } from '@application/AppCore'
-import { PageTypes } from '@core/models/page.model'
+import { PageTypes } from '@core/models/page/page.model'
 import { useObserver } from 'mobx-react'
 import LoadingSection from '@components/loading-section.component'
 
